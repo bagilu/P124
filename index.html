@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#071426">
   <meta name="description" content="P124 誰是鄰居｜Who Borders：辨識地理區域接壤關係的雙語互動遊戲。">
   <title>P124 誰是鄰居｜Who Borders</title>
+  <link rel="stylesheet" href="vendor/leaflet.css">
   <link rel="stylesheet" href="styles.css">
   <script>
     window.P124_CONFIG_READY = new Promise((resolve) => {
@@ -84,6 +85,22 @@
 
       <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
 
+      <section id="answerMapPanel" class="answer-map-panel" aria-labelledby="answerMapHeading" hidden>
+        <div class="answer-map-heading">
+          <div>
+            <p id="answerMapKicker" class="section-kicker">答案地圖</p>
+            <h2 id="answerMapHeading">正確的相鄰地區</h2>
+          </div>
+          <div class="map-legend" aria-label="地圖圖例">
+            <span><i class="legend-target"></i><b id="legendTarget">題目地區</b></span>
+            <span><i class="legend-correct"></i><b id="legendCorrect">正確鄰居</b></span>
+            <span id="legendWrongItem"><i class="legend-wrong"></i><b id="legendWrong">誤選地區</b></span>
+          </div>
+        </div>
+        <div id="answerMap" class="answer-map" role="img" aria-label="作答結果地圖"></div>
+        <p id="mapSource" class="map-source">邊界資料：Natural Earth（已簡化）</p>
+      </section>
+
       <div class="game-actions">
         <button id="resetButton" class="button button-secondary" type="button">重新選擇</button>
         <button id="submitButton" class="button button-primary" type="button">提交答案</button>
@@ -98,5 +115,6 @@
     <span aria-hidden="true">·</span>
     <a href="https://tcubmdsbilab.github.io/P101/" target="_blank" rel="noopener">慈濟大學 經營管理學系｜好玩實驗室 作品</a>
   </footer>
+  <script src="vendor/leaflet.js"></script>
 </body>
 </html>

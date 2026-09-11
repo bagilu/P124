@@ -1,4 +1,4 @@
--- P124 V0.1 示範分類與六道題目
+-- P124 V0.2 示範分類與六道題目
 -- 題庫示範包括四種相鄰者數量級距。
 
 insert into public."TblP124Category" (

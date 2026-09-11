@@ -8,13 +8,22 @@
     targetHint: $("#targetHint"), feedback: $("#feedback"), candidateCount: $("#candidateCount"),
     selectionCount: $("#selectionCount"), questionNumber: $("#questionNumber"),
     language: $("#languageButton"), badge: $("#dataSourceBadge"), submit: $("#submitButton"),
-    reset: $("#resetButton"), next: $("#nextButton"), left: $("#scrollLeft"), right: $("#scrollRight")
+    reset: $("#resetButton"), next: $("#nextButton"), left: $("#scrollLeft"), right: $("#scrollRight"),
+    mapPanel: $("#answerMapPanel"), map: $("#answerMap"), mapHeading: $("#answerMapHeading"),
+    mapKicker: $("#answerMapKicker"), legendTarget: $("#legendTarget"),
+    legendCorrect: $("#legendCorrect"), legendWrong: $("#legendWrong"),
+    legendWrongItem: $("#legendWrongItem"), mapSource: $("#mapSource")
   };
 
   const state = {
     lang: localStorage.getItem("P124Language") || "zh",
     categories: [], questions: [], category: null, question: null, candidates: [], selected: [],
-    checked: false, source: "demo", questionIndex: 0
+    checked: false, source: "demo", questionIndex: 0,
+    geoData: new Map(), answerMap: null, answerMapLayer: null, answerLabelLayer: null, mapRequest: 0
+  };
+
+  const mapFiles = {
+    CN_PROVINCES: "geo/CN_PROVINCES.geojson"
   };
 
   const copy = {
@@ -28,7 +37,9 @@
       empty: "請先選擇至少一個答案。", success: "完全正確！所有相鄰地區都已找出。",
       error: (w, m) => `還差一點：選錯 ${w} 個，遺漏 ${m} 個。可以修正後再次提交。`,
       noQuestion: "這個分類目前沒有可用題目。", switchLabel: "Switch to English",
-      question: (n) => `題目 ${String(n).padStart(2, "0")}`
+      question: (n) => `題目 ${String(n).padStart(2, "0")}`,
+      mapKicker: "答案地圖", mapHeading: "正確的相鄰地區", mapTarget: "題目地區",
+      mapCorrect: "正確鄰居", mapWrong: "誤選地區", mapSource: "邊界資料：Natural Earth（已簡化）"
     },
     en: {
       sourceDemo: "Demo data", sourceDb: "Supabase data", eyebrow: "Geographic Border Challenge",
@@ -40,7 +51,9 @@
       empty: "Select at least one answer first.", success: "Exactly right! You found every bordering region.",
       error: (w, m) => `Almost there: ${w} incorrect and ${m} missing. Revise your choices and try again.`,
       noQuestion: "There are no available questions in this category.", switchLabel: "切換為中文",
-      question: (n) => `QUESTION ${String(n).padStart(2, "0")}`
+      question: (n) => `QUESTION ${String(n).padStart(2, "0")}`,
+      mapKicker: "ANSWER MAP", mapHeading: "The correct bordering regions", mapTarget: "Target",
+      mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices", mapSource: "Boundary data: Natural Earth (simplified)"
     }
   };
 
@@ -88,6 +101,116 @@
   function nameFor(item) { return state.lang === "zh" ? item.zh : item.en; }
   function itemMap() { return new Map((state.category?.Items || []).map((item) => [item.id, item])); }
 
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+    })[character]);
+  }
+
+  function hideAnswerMap() {
+    state.mapRequest += 1;
+    ui.mapPanel.hidden = true;
+  }
+
+  function loadGeoScript(categoryCode, geoJsonPath) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = geoJsonPath.replace(/\.geojson$/, ".js");
+      script.onload = () => resolve(window.P124_GEO_DATA?.[categoryCode] || null);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadGeoData(categoryCode) {
+    if (state.geoData.has(categoryCode)) return state.geoData.get(categoryCode);
+    const path = mapFiles[categoryCode];
+    if (!path) return null;
+    let data = null;
+    try {
+      const response = await fetch(path);
+      if (!response.ok) throw new Error("Map request failed");
+      data = await response.json();
+    } catch (error) {
+      data = await loadGeoScript(categoryCode, path);
+    }
+    if (data) state.geoData.set(categoryCode, data);
+    return data;
+  }
+
+  function ensureAnswerMap() {
+    if (state.answerMap || !window.L) return state.answerMap;
+    state.answerMap = L.map(ui.map, {
+      attributionControl: false,
+      minZoom: 2,
+      maxZoom: 8,
+      zoomSnap: 0.25,
+      scrollWheelZoom: true
+    });
+    L.control.attribution({prefix: false}).addTo(state.answerMap)
+      .addAttribution('<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>');
+    return state.answerMap;
+  }
+
+  function answerMapStyle(feature, targetId, correctIds, wrongIds) {
+    const id = feature.properties.id;
+    if (id === targetId) return {color: "#fff0b8", weight: 2.2, fillColor: "#ffc857", fillOpacity: .9};
+    if (correctIds.has(id)) return {color: "#d8fffa", weight: 1.8, fillColor: "#42d6c4", fillOpacity: .76};
+    if (wrongIds.has(id)) return {color: "#ffd7d7", weight: 1.8, fillColor: "#ff7373", fillOpacity: .72};
+    return {color: "#66839a", weight: .75, fillColor: "#17334a", fillOpacity: .38};
+  }
+
+  async function renderAnswerMap() {
+    const categoryCode = state.category?.CategoryCode;
+    if (!state.checked || !mapFiles[categoryCode]) {
+      hideAnswerMap();
+      return;
+    }
+    const requestId = ++state.mapRequest;
+    try {
+      const data = await loadGeoData(categoryCode);
+      if (!data || requestId !== state.mapRequest || !state.checked) return;
+      const map = ensureAnswerMap();
+      if (!map) return;
+      const targetId = state.question.TargetItemID;
+      const correctIds = new Set(state.question.CorrectItemIDs);
+      const wrongIds = new Set(state.selected.filter((id) => !correctIds.has(id)));
+      const labeledIds = new Set([targetId, ...correctIds, ...wrongIds]);
+      const focusIds = new Set([targetId, ...correctIds]);
+      if (state.answerMapLayer) state.answerMapLayer.remove();
+      if (state.answerLabelLayer) state.answerLabelLayer.remove();
+      state.answerMapLayer = L.geoJSON(data, {
+        style: (feature) => answerMapStyle(feature, targetId, correctIds, wrongIds),
+        interactive: false
+      }).addTo(map);
+      state.answerLabelLayer = L.layerGroup();
+      data.features.filter((feature) => labeledIds.has(feature.properties.id)).forEach((feature) => {
+        const properties = feature.properties;
+        const label = state.lang === "zh" ? properties.zh : properties.en;
+        L.marker([properties.labelLat, properties.labelLng], {
+          interactive: false,
+          icon: L.divIcon({className: "p124-map-label", html: escapeHtml(label), iconSize: null})
+        }).addTo(state.answerLabelLayer);
+      });
+      state.answerLabelLayer.addTo(map);
+      ui.legendWrongItem.hidden = wrongIds.size === 0;
+      ui.mapPanel.hidden = false;
+      const focus = {
+        type: "FeatureCollection",
+        features: data.features.filter((feature) => focusIds.has(feature.properties.id))
+      };
+      requestAnimationFrame(() => {
+        map.invalidateSize();
+        const bounds = L.geoJSON(focus).getBounds();
+        if (bounds.isValid()) map.fitBounds(bounds, {padding: [22, 22], maxZoom: 6});
+        ui.mapPanel.scrollIntoView({behavior: "smooth", block: "nearest"});
+      });
+    } catch (error) {
+      hideAnswerMap();
+      console.warn("P124 answer map could not be displayed.", error);
+    }
+  }
+
   function buildCandidates(question, category) {
     const correct = [...new Set(question.CorrectItemIDs)];
     const rules = candidateRules(correct.length);
@@ -102,6 +225,7 @@
   }
 
   function setQuestion(question) {
+    hideAnswerMap();
     state.question = question;
     state.selected = [];
     state.checked = false;
@@ -131,6 +255,7 @@
     state.checked = false;
     ui.feedback.className = "feedback";
     ui.feedback.textContent = "";
+    hideAnswerMap();
     renderAnswers();
     renderCandidates();
   }
@@ -140,6 +265,7 @@
     state.checked = false;
     ui.feedback.className = "feedback";
     ui.feedback.textContent = "";
+    hideAnswerMap();
     renderAnswers();
     renderCandidates();
   }
@@ -164,6 +290,7 @@
     }
     renderAnswers();
     renderCandidates();
+    renderAnswerMap();
   }
 
   function makeChip(item, selected) {
@@ -259,6 +386,12 @@
     ui.submit.textContent = t.submit;
     ui.next.textContent = t.next;
     $("#instruction").textContent = t.instruction;
+    ui.mapKicker.textContent = t.mapKicker;
+    ui.mapHeading.textContent = t.mapHeading;
+    ui.legendTarget.textContent = t.mapTarget;
+    ui.legendCorrect.textContent = t.mapCorrect;
+    ui.legendWrong.textContent = t.mapWrong;
+    ui.mapSource.textContent = t.mapSource;
     ui.language.textContent = state.lang === "zh" ? "EN" : "中";
     ui.language.setAttribute("aria-label", t.switchLabel);
     ui.badge.textContent = state.source === "database" ? t.sourceDb : t.sourceDemo;
@@ -305,6 +438,7 @@
       state.lang = state.lang === "zh" ? "en" : "zh";
       localStorage.setItem("P124Language", state.lang);
       render();
+      if (state.checked) renderAnswerMap();
     });
     ui.submit.addEventListener("click", checkAnswer);
     ui.reset.addEventListener("click", () => {
@@ -312,6 +446,7 @@
       state.checked = false;
       ui.feedback.className = "feedback";
       ui.feedback.textContent = "";
+      hideAnswerMap();
       renderAnswers();
       renderCandidates();
     });

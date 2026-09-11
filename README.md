@@ -1,8 +1,8 @@
-# P124 誰是鄰居｜Who Borders V0.1
+# P124 誰是鄰居｜Who Borders V0.2
 
 手機優先的雙語地理接壤辨識遊戲。候選答案位於上方可左右滑動的橫幅；點選或拖曳答案後，答案會排列在中央題目的圓角同心框周圍。
 
-## V0.1 功能
+## V0.2 功能
 
 - 中英文介面切換。
 - 題目大分類選擇。
@@ -12,6 +12,14 @@
 - 依正確相鄰者數量，自動決定候選總數及人工誘答數。
 - 內建六題示範資料；尚未連接 Supabase 也可直接試玩。
 - Supabase 兩表 Schema、RLS、權限、示範 INSERT 與健康檢查。
+- 中國大陸省級行政區答案地圖，首批支援青海與四川題目。
+- 送出答案後，自動顯示題目地區、全部正確鄰居與誤選地區。
+- 地圖名稱隨介面切換繁體中文或英文。
+- 支援滑鼠、觸控拖曳及縮放；畫面自動對準題目與正確鄰居。
+- 地圖資料延遲載入，不會影響尚未作答時的初始畫面。
+- 內附簡化後的 GeoJSON，邊界頂點減少約 86.5%。
+
+美國各州與歐洲國家題目仍可正常遊玩，但 V0.2 尚未顯示答案地圖。
 
 ## 候選數量規則
 
@@ -45,6 +53,14 @@ styles.css
 app.js
 demo-data.js
 config-sample.js
+geo/
+  CN_PROVINCES.geojson
+  CN_PROVINCES.js
+  SOURCE.md
+vendor/
+  leaflet.css
+  leaflet.js
+  LEAFLET_LICENSE.txt
 database/
   01_CreateTables.sql
   02_CreateIndexes.sql
@@ -61,3 +77,9 @@ database/
 ## 品牌
 
 慈濟大學 經營管理學系｜好玩實驗室 作品
+
+## 地圖資料與元件
+
+- 行政區邊界：Natural Earth 5.1.1，Public Domain。
+- 地圖互動：Leaflet 1.9.4，BSD-2-Clause。
+- 地圖僅供教學示意；政治邊界呈現遵循所採資料來源，不作為法律認定。

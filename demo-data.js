@@ -1,0 +1,91 @@
+window.P124_DEMO_DATA = {
+  categories: [
+    {
+      CategoryID: 1,
+      CategoryCode: "CN_PROVINCES",
+      CategoryNameZh: "中國大陸省級行政區",
+      CategoryNameEn: "Mainland China Divisions",
+      DescriptionZh: "示範中國大陸省級行政區的陸地接壤關係",
+      DescriptionEn: "Land-border relationships among mainland China's provincial-level divisions",
+      SortOrder: 10,
+      IsActive: true,
+      Items: [
+        ["CN-BJ","北京","Beijing"],["CN-TJ","天津","Tianjin"],["CN-HE","河北","Hebei"],
+        ["CN-SX","山西","Shanxi"],["CN-NM","內蒙古","Inner Mongolia"],["CN-LN","遼寧","Liaoning"],
+        ["CN-JL","吉林","Jilin"],["CN-HL","黑龍江","Heilongjiang"],["CN-SH","上海","Shanghai"],
+        ["CN-JS","江蘇","Jiangsu"],["CN-ZJ","浙江","Zhejiang"],["CN-AH","安徽","Anhui"],
+        ["CN-FJ","福建","Fujian"],["CN-JX","江西","Jiangxi"],["CN-SD","山東","Shandong"],
+        ["CN-HA","河南","Henan"],["CN-HB","湖北","Hubei"],["CN-HN","湖南","Hunan"],
+        ["CN-GD","廣東","Guangdong"],["CN-GX","廣西","Guangxi"],["CN-HI","海南","Hainan"],
+        ["CN-CQ","重慶","Chongqing"],["CN-SC","四川","Sichuan"],["CN-GZ","貴州","Guizhou"],
+        ["CN-YN","雲南","Yunnan"],["CN-XZ","西藏","Tibet"],["CN-SN","陝西","Shaanxi"],
+        ["CN-GS","甘肅","Gansu"],["CN-QH","青海","Qinghai"],["CN-NX","寧夏","Ningxia"],
+        ["CN-XJ","新疆","Xinjiang"]
+      ].map(([id, zh, en]) => ({id, zh, en}))
+    },
+    {
+      CategoryID: 2,
+      CategoryCode: "US_STATES",
+      CategoryNameZh: "美國各州",
+      CategoryNameEn: "U.S. States",
+      DescriptionZh: "美國各州的陸地接壤關係",
+      DescriptionEn: "Land-border relationships among U.S. states",
+      SortOrder: 20,
+      IsActive: true,
+      Items: [
+        ["US-AL","阿拉巴馬州","Alabama"],["US-AK","阿拉斯加州","Alaska"],["US-AZ","亞利桑那州","Arizona"],
+        ["US-AR","阿肯色州","Arkansas"],["US-CA","加利福尼亞州","California"],["US-CO","科羅拉多州","Colorado"],
+        ["US-CT","康乃狄克州","Connecticut"],["US-DE","德拉瓦州","Delaware"],["US-FL","佛羅里達州","Florida"],
+        ["US-GA","喬治亞州","Georgia"],["US-HI","夏威夷州","Hawaii"],["US-ID","愛達荷州","Idaho"],
+        ["US-IL","伊利諾州","Illinois"],["US-IN","印第安納州","Indiana"],["US-IA","愛荷華州","Iowa"],
+        ["US-KS","堪薩斯州","Kansas"],["US-KY","肯塔基州","Kentucky"],["US-LA","路易斯安那州","Louisiana"],
+        ["US-ME","緬因州","Maine"],["US-MD","馬里蘭州","Maryland"],["US-MA","麻薩諸塞州","Massachusetts"],
+        ["US-MI","密西根州","Michigan"],["US-MN","明尼蘇達州","Minnesota"],["US-MS","密西西比州","Mississippi"],
+        ["US-MO","密蘇里州","Missouri"],["US-MT","蒙大拿州","Montana"],["US-NE","內布拉斯加州","Nebraska"],
+        ["US-NV","內華達州","Nevada"],["US-NH","新罕布夏州","New Hampshire"],["US-NJ","紐澤西州","New Jersey"],
+        ["US-NM","新墨西哥州","New Mexico"],["US-NY","紐約州","New York"],["US-NC","北卡羅來納州","North Carolina"],
+        ["US-ND","北達科他州","North Dakota"],["US-OH","俄亥俄州","Ohio"],["US-OK","奧克拉荷馬州","Oklahoma"],
+        ["US-OR","奧勒岡州","Oregon"],["US-PA","賓夕法尼亞州","Pennsylvania"],["US-RI","羅德島州","Rhode Island"],
+        ["US-SC","南卡羅來納州","South Carolina"],["US-SD","南達科他州","South Dakota"],["US-TN","田納西州","Tennessee"],
+        ["US-TX","德州","Texas"],["US-UT","猶他州","Utah"],["US-VT","佛蒙特州","Vermont"],
+        ["US-VA","維吉尼亞州","Virginia"],["US-WA","華盛頓州","Washington"],["US-WV","西維吉尼亞州","West Virginia"],
+        ["US-WI","威斯康辛州","Wisconsin"],["US-WY","懷俄明州","Wyoming"]
+      ].map(([id, zh, en]) => ({id, zh, en}))
+    },
+    {
+      CategoryID: 3,
+      CategoryCode: "EUROPE_COUNTRIES",
+      CategoryNameZh: "歐洲國家",
+      CategoryNameEn: "European Countries",
+      DescriptionZh: "歐洲國家的陸地接壤關係",
+      DescriptionEn: "Land-border relationships among European countries",
+      SortOrder: 30,
+      IsActive: true,
+      Items: [
+        ["EU-AL","阿爾巴尼亞","Albania"],["EU-AD","安道爾","Andorra"],["EU-AT","奧地利","Austria"],
+        ["EU-BY","白俄羅斯","Belarus"],["EU-BE","比利時","Belgium"],["EU-BA","波士尼亞與赫塞哥維納","Bosnia and Herzegovina"],
+        ["EU-BG","保加利亞","Bulgaria"],["EU-HR","克羅埃西亞","Croatia"],["EU-CZ","捷克","Czechia"],
+        ["EU-DK","丹麥","Denmark"],["EU-EE","愛沙尼亞","Estonia"],["EU-FI","芬蘭","Finland"],
+        ["EU-FR","法國","France"],["EU-DE","德國","Germany"],["EU-GR","希臘","Greece"],
+        ["EU-HU","匈牙利","Hungary"],["EU-IS","冰島","Iceland"],["EU-IE","愛爾蘭","Ireland"],
+        ["EU-IT","義大利","Italy"],["EU-LV","拉脫維亞","Latvia"],["EU-LI","列支敦斯登","Liechtenstein"],
+        ["EU-LT","立陶宛","Lithuania"],["EU-LU","盧森堡","Luxembourg"],["EU-MT","馬爾他","Malta"],
+        ["EU-MD","摩爾多瓦","Moldova"],["EU-MC","摩納哥","Monaco"],["EU-ME","蒙特內哥羅","Montenegro"],
+        ["EU-NL","荷蘭","Netherlands"],["EU-MK","北馬其頓","North Macedonia"],["EU-NO","挪威","Norway"],
+        ["EU-PL","波蘭","Poland"],["EU-PT","葡萄牙","Portugal"],["EU-RO","羅馬尼亞","Romania"],
+        ["EU-SM","聖馬利諾","San Marino"],["EU-RS","塞爾維亞","Serbia"],["EU-SK","斯洛伐克","Slovakia"],
+        ["EU-SI","斯洛維尼亞","Slovenia"],["EU-ES","西班牙","Spain"],["EU-SE","瑞典","Sweden"],
+        ["EU-CH","瑞士","Switzerland"],["EU-UA","烏克蘭","Ukraine"],["EU-GB","英國","United Kingdom"],
+        ["EU-VA","梵蒂岡","Vatican City"]
+      ].map(([id, zh, en]) => ({id, zh, en}))
+    }
+  ],
+  questions: [
+    {QuestionID: 1, CategoryID: 1, TargetItemID: "CN-QH", CorrectItemIDs: ["CN-XJ","CN-GS","CN-SC","CN-XZ"], DistractorItemIDs: ["CN-NX","CN-SN","CN-NM","CN-YN"], IsActive: true},
+    {QuestionID: 2, CategoryID: 1, TargetItemID: "CN-SC", CorrectItemIDs: ["CN-QH","CN-GS","CN-SN","CN-CQ","CN-GZ","CN-YN","CN-XZ"], DistractorItemIDs: ["CN-NX","CN-HB","CN-GX","CN-XJ","CN-HN"], IsActive: true},
+    {QuestionID: 3, CategoryID: 2, TargetItemID: "US-CA", CorrectItemIDs: ["US-OR","US-NV","US-AZ"], DistractorItemIDs: ["US-WA","US-UT","US-NM","US-TX"], IsActive: true},
+    {QuestionID: 4, CategoryID: 2, TargetItemID: "US-TN", CorrectItemIDs: ["US-KY","US-VA","US-NC","US-GA","US-AL","US-MS","US-AR","US-MO"], DistractorItemIDs: ["US-WV","US-SC","US-OK","US-IL","US-IN"], IsActive: true},
+    {QuestionID: 5, CategoryID: 3, TargetItemID: "EU-PT", CorrectItemIDs: ["EU-ES"], DistractorItemIDs: ["EU-FR","EU-IT","EU-IE"], IsActive: true},
+    {QuestionID: 6, CategoryID: 3, TargetItemID: "EU-DE", CorrectItemIDs: ["EU-DK","EU-PL","EU-CZ","EU-AT","EU-CH","EU-FR","EU-LU","EU-BE","EU-NL"], DistractorItemIDs: ["EU-LI","EU-IT","EU-SK","EU-HU","EU-SE","EU-NO"], IsActive: true}
+  ]
+};

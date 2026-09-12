@@ -14,7 +14,8 @@
     legendCorrect: $("#legendCorrect"), legendWrong: $("#legendWrong"),
     legendWrongItem: $("#legendWrongItem"), mapSource: $("#mapSource"),
     challengeCount: $("#challengeCountSelect"), challengeCountLabel: $("#challengeCountLabel"),
-    startChallenge: $("#startChallengeButton"),
+    startChallenge: $("#startChallengeButton"), settings: $("#challengeSettings"),
+    settingsLabel: $("#settingsLabel"), settingsHint: $("#settingsHint"),
     scoreRegionLabel: $("#scoreRegionLabel"), scoreRegion: $("#scoreRegion"),
     scoreProgressLabel: $("#scoreProgressLabel"), scoreProgress: $("#scoreProgress"),
     scoreTotalLabel: $("#scoreTotalLabel"), scoreTotal: $("#scoreTotal"),
@@ -114,6 +115,7 @@
       mapKicker: "答案地圖", mapHeading: "正確的相鄰地區", mapTarget: "題目地區",
       mapCorrect: "正確鄰居", mapWrong: "誤選地區",
       challengeLength: "挑戰題數", fiveQuestions: "5題", tenQuestions: "10題", twentyQuestions: "20題",
+      settings: "挑戰設定", settingsHint: (region, count) => `${region} · ${count}題`,
       startChallenge: "開始挑戰", restartChallenge: "重新開始挑戰",
       confirmRestart: "目前的挑戰尚未完成。確定要重新開始嗎？",
       ready: "請選擇區域與挑戰題數，然後按下「開始挑戰」。",
@@ -141,6 +143,7 @@
       mapKicker: "ANSWER MAP", mapHeading: "The correct bordering regions", mapTarget: "Target",
       mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices",
       challengeLength: "Challenge length", fiveQuestions: "5 questions", tenQuestions: "10 questions", twentyQuestions: "20 questions",
+      settings: "CHALLENGE SETTINGS", settingsHint: (region, count) => `${region} · ${count} questions`,
       startChallenge: "Start challenge", restartChallenge: "Restart challenge",
       confirmRestart: "This challenge is still in progress. Restart it?",
       ready: "Choose a region and challenge length, then select “Start challenge.”",
@@ -309,6 +312,7 @@
     state.questionIndex = 0;
     ui.result.hidden = true;
     setChallengeControlsLocked(false);
+    ui.settings.open = true;
     hideAnswerMap();
     render();
   }
@@ -332,6 +336,7 @@
     state.questionIndex = 0;
     ui.result.hidden = true;
     setChallengeControlsLocked(true);
+    ui.settings.open = false;
     nextChallengeQuestion(true);
   }
 
@@ -673,8 +678,9 @@
   function renderStaticCopy() {
     const t = copy[state.lang];
     document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
-    $("#eyebrow").textContent = t.eyebrow;
     $("#gameHeading").textContent = t.heading;
+    ui.settingsLabel.textContent = t.settings;
+    ui.settingsHint.textContent = t.settingsHint(categoryName(), state.challenge.targetCount);
     $("#categoryLabel").textContent = t.category;
     ui.challengeCountLabel.textContent = t.challengeLength;
     ui.challengeCount.options[0].textContent = t.fiveQuestions;
@@ -719,6 +725,8 @@
   }
 
   function render() {
+    document.body.classList.toggle("challenge-active", state.challenge.active);
+    document.body.classList.toggle("challenge-finished", state.challenge.finished);
     renderStaticCopy();
     renderCategoryOptions();
     renderScoreboard();

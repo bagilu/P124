@@ -42,11 +42,14 @@
   </header>
 
   <main class="game-shell">
-    <section class="control-strip" aria-labelledby="gameHeading">
-      <div>
-        <p id="eyebrow" class="eyebrow">Geographic Border Challenge</p>
-        <h1 id="gameHeading">Find every bordering region</h1>
-      </div>
+    <details id="challengeSettings" class="control-strip" open>
+      <summary class="control-summary">
+        <span>
+          <small id="settingsLabel">CHALLENGE SETTINGS</small>
+          <strong id="gameHeading">Find every bordering region</strong>
+        </span>
+        <span id="settingsHint" class="settings-hint">Region · Questions</span>
+      </summary>
       <div class="challenge-controls">
         <div class="control-group category-control">
           <label id="categoryLabel" for="categorySelect">Question category</label>
@@ -62,8 +65,9 @@
         </div>
         <button id="startChallengeButton" class="button button-primary challenge-start" type="button">Start challenge</button>
       </div>
-    </section>
+    </details>
 
+    <section class="game-stage" aria-label="Game area">
     <section class="challenge-scoreboard" aria-label="Challenge progress" aria-live="polite">
       <div class="score-stat score-stat-region">
         <small id="scoreRegionLabel">REGION</small>
@@ -120,6 +124,12 @@
         <div id="dropHint" class="drop-hint">DROP HERE</div>
       </div>
 
+      <div class="game-actions">
+        <button id="resetButton" class="button button-secondary" type="button">Reset</button>
+        <button id="submitButton" class="button button-primary" type="button">Check answer</button>
+        <button id="nextButton" class="button button-secondary" type="button">Next question</button>
+      </div>
+
       <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
 
       <section id="answerMapPanel" class="answer-map-panel" aria-labelledby="answerMapHeading" hidden>
@@ -159,12 +169,8 @@
         </div>
       </section>
 
-      <div class="game-actions">
-        <button id="resetButton" class="button button-secondary" type="button">Reset</button>
-        <button id="submitButton" class="button button-primary" type="button">Check answer</button>
-        <button id="nextButton" class="button button-secondary" type="button">Next question</button>
-      </div>
       <p id="instruction" class="instruction">Answers are checked only after submission. Tap a selected answer to return it to the candidate bar.</p>
+    </section>
     </section>
   </main>
 

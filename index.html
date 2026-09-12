@@ -42,52 +42,14 @@
   </header>
 
   <main class="game-shell">
-    <details id="challengeSettings" class="control-strip" open>
-      <summary class="control-summary">
-        <span>
-          <small id="settingsLabel">CHALLENGE SETTINGS</small>
-          <strong id="gameHeading">Find every bordering region</strong>
-        </span>
-        <span id="settingsHint" class="settings-hint">Region · Questions</span>
-      </summary>
-      <div class="challenge-controls">
-        <div class="control-group category-control">
-          <label id="categoryLabel" for="categorySelect">Question category</label>
-          <select id="categorySelect"></select>
-        </div>
-        <div class="control-group count-control">
-          <label id="challengeCountLabel" for="challengeCountSelect">Challenge length</label>
-          <select id="challengeCountSelect">
-            <option value="5">5 questions</option>
-            <option value="10" selected>10 questions</option>
-            <option value="20">20 questions</option>
-          </select>
-        </div>
-        <button id="startChallengeButton" class="button button-primary challenge-start" type="button">Start challenge</button>
+    <section class="control-strip" aria-labelledby="gameHeading">
+      <div>
+        <p id="eyebrow" class="eyebrow">Geographic Border Challenge</p>
+        <h1 id="gameHeading">Find every bordering region</h1>
       </div>
-    </details>
-
-    <section class="game-stage" aria-label="Game area">
-    <section class="challenge-scoreboard" aria-label="Challenge progress" aria-live="polite">
-      <div class="score-stat score-stat-region">
-        <small id="scoreRegionLabel">REGION</small>
-        <strong id="scoreRegion">—</strong>
-      </div>
-      <div class="score-stat">
-        <small id="scoreProgressLabel">PROGRESS</small>
-        <strong id="scoreProgress">0 / 10</strong>
-      </div>
-      <div class="score-stat score-stat-primary">
-        <small id="scoreTotalLabel">SCORE</small>
-        <strong id="scoreTotal">0</strong>
-      </div>
-      <div class="score-stat">
-        <small id="scoreStreakLabel">STREAK</small>
-        <strong id="scoreStreak">× 0</strong>
-      </div>
-      <div class="score-stat">
-        <small id="scoreBestLabel">LOCAL BEST</small>
-        <strong id="scoreBest">—</strong>
+      <div class="control-group">
+        <label id="categoryLabel" for="categorySelect">Question category</label>
+        <select id="categorySelect"></select>
       </div>
     </section>
 
@@ -124,12 +86,6 @@
         <div id="dropHint" class="drop-hint">DROP HERE</div>
       </div>
 
-      <div class="game-actions">
-        <button id="resetButton" class="button button-secondary" type="button">Reset</button>
-        <button id="submitButton" class="button button-primary" type="button">Check answer</button>
-        <button id="nextButton" class="button button-secondary" type="button">Next question</button>
-      </div>
-
       <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
 
       <section id="answerMapPanel" class="answer-map-panel" aria-labelledby="answerMapHeading" hidden>
@@ -148,29 +104,12 @@
         <p id="mapSource" class="map-source"></p>
       </section>
 
-      <section id="challengeResult" class="challenge-result" aria-labelledby="resultHeading" hidden>
-        <p id="resultKicker" class="section-kicker">CHALLENGE COMPLETE</p>
-        <h2 id="resultHeading">Your result</h2>
-        <div class="result-score">
-          <strong id="resultScore">0</strong>
-          <span id="resultMaximum">/ 1000</span>
-        </div>
-        <p id="resultRegion" class="result-region"></p>
-        <div class="result-grid">
-          <div><small id="resultQuestionsLabel">QUESTIONS</small><strong id="resultQuestions">10</strong></div>
-          <div><small id="resultPerfectLabel">PERFECT</small><strong id="resultPerfect">0</strong></div>
-          <div><small id="resultStreakLabel">BEST STREAK</small><strong id="resultStreak">0</strong></div>
-          <div><small id="resultBestLabel">LOCAL BEST</small><strong id="resultBest">0</strong></div>
-        </div>
-        <p id="resultRecord" class="result-record" hidden>NEW LOCAL BEST</p>
-        <div class="result-actions">
-          <button id="retryChallengeButton" class="button button-primary" type="button">Try again</button>
-          <button id="changeChallengeButton" class="button button-secondary" type="button">Change challenge</button>
-        </div>
-      </section>
-
+      <div class="game-actions">
+        <button id="resetButton" class="button button-secondary" type="button">Reset</button>
+        <button id="submitButton" class="button button-primary" type="button">Check answer</button>
+        <button id="nextButton" class="button button-secondary" type="button">Next question</button>
+      </div>
       <p id="instruction" class="instruction">Answers are checked only after submission. Tap a selected answer to return it to the candidate bar.</p>
-    </section>
     </section>
   </main>
 

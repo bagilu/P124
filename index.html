@@ -47,9 +47,43 @@
         <p id="eyebrow" class="eyebrow">Geographic Border Challenge</p>
         <h1 id="gameHeading">Find every bordering region</h1>
       </div>
-      <div class="control-group">
-        <label id="categoryLabel" for="categorySelect">Question category</label>
-        <select id="categorySelect"></select>
+      <div class="challenge-controls">
+        <div class="control-group category-control">
+          <label id="categoryLabel" for="categorySelect">Question category</label>
+          <select id="categorySelect"></select>
+        </div>
+        <div class="control-group count-control">
+          <label id="challengeCountLabel" for="challengeCountSelect">Challenge length</label>
+          <select id="challengeCountSelect">
+            <option value="5">5 questions</option>
+            <option value="10" selected>10 questions</option>
+            <option value="20">20 questions</option>
+          </select>
+        </div>
+        <button id="startChallengeButton" class="button button-primary challenge-start" type="button">Start challenge</button>
+      </div>
+    </section>
+
+    <section class="challenge-scoreboard" aria-label="Challenge progress" aria-live="polite">
+      <div class="score-stat score-stat-region">
+        <small id="scoreRegionLabel">REGION</small>
+        <strong id="scoreRegion">—</strong>
+      </div>
+      <div class="score-stat">
+        <small id="scoreProgressLabel">PROGRESS</small>
+        <strong id="scoreProgress">0 / 10</strong>
+      </div>
+      <div class="score-stat score-stat-primary">
+        <small id="scoreTotalLabel">SCORE</small>
+        <strong id="scoreTotal">0</strong>
+      </div>
+      <div class="score-stat">
+        <small id="scoreStreakLabel">STREAK</small>
+        <strong id="scoreStreak">× 0</strong>
+      </div>
+      <div class="score-stat">
+        <small id="scoreBestLabel">LOCAL BEST</small>
+        <strong id="scoreBest">—</strong>
       </div>
     </section>
 
@@ -102,6 +136,27 @@
         </div>
         <div id="answerMap" class="answer-map" role="img" aria-label="Answer map"></div>
         <p id="mapSource" class="map-source"></p>
+      </section>
+
+      <section id="challengeResult" class="challenge-result" aria-labelledby="resultHeading" hidden>
+        <p id="resultKicker" class="section-kicker">CHALLENGE COMPLETE</p>
+        <h2 id="resultHeading">Your result</h2>
+        <div class="result-score">
+          <strong id="resultScore">0</strong>
+          <span id="resultMaximum">/ 1000</span>
+        </div>
+        <p id="resultRegion" class="result-region"></p>
+        <div class="result-grid">
+          <div><small id="resultQuestionsLabel">QUESTIONS</small><strong id="resultQuestions">10</strong></div>
+          <div><small id="resultPerfectLabel">PERFECT</small><strong id="resultPerfect">0</strong></div>
+          <div><small id="resultStreakLabel">BEST STREAK</small><strong id="resultStreak">0</strong></div>
+          <div><small id="resultBestLabel">LOCAL BEST</small><strong id="resultBest">0</strong></div>
+        </div>
+        <p id="resultRecord" class="result-record" hidden>NEW LOCAL BEST</p>
+        <div class="result-actions">
+          <button id="retryChallengeButton" class="button button-primary" type="button">Try again</button>
+          <button id="changeChallengeButton" class="button button-secondary" type="button">Change challenge</button>
+        </div>
       </section>
 
       <div class="game-actions">

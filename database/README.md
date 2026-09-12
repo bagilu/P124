@@ -11,6 +11,7 @@
 7. `07_GrantPermissions.sql`
 8. `08_SeedData.sql`
 9. `09_AddTaiwanCounties.sql`
+10. `10_CompleteTaiwanQuestions.sql`
 
 完成後執行 `99_P124_HealthCheck.sql`。第二與第三段檢查正常時都應回傳 0 rows。
 
@@ -24,5 +25,14 @@
 2. `99_P124_HealthCheck.sql`
 
 `09_AddTaiwanCounties.sql` 可重複執行，不會重複建立分類或題目。
+
+## 從 V0.3 升級至 V0.4
+
+只需執行：
+
+1. `10_CompleteTaiwanQuestions.sql`
+2. `99_P124_HealthCheck.sql`
+
+`10_CompleteTaiwanQuestions.sql` 可重複執行，會補齊或更新台灣22縣市題目。
 
 所有 SQL 都只操作 `TblP124Category`、`TblP124Question` 及其 P124 專屬索引、政策，不含影響整個 `public` schema 的全域指令。

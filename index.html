@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -25,27 +25,30 @@
   <div class="ambient ambient-two" aria-hidden="true"></div>
 
   <header class="site-header">
-    <a class="brand" href="./" aria-label="P124 誰是鄰居首頁">
-      <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
-      <span>
-        <strong>P124 誰是鄰居</strong>
-        <small>WHO BORDERS</small>
-      </span>
-    </a>
+    <div class="header-identity">
+      <a class="brand" href="./" aria-label="P124 Who Borders home">
+        <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
+        <span>
+          <strong>P124 誰是鄰居</strong>
+          <small>WHO BORDERS</small>
+        </span>
+      </a>
+      <a class="institution-link" href="https://tcubmdsbilab.github.io/P101/" target="_blank" rel="noopener">慈濟大學 經營管理學系｜好玩實驗室 作品</a>
+    </div>
     <div class="header-actions">
-      <span id="dataSourceBadge" class="source-badge">示範資料</span>
-      <button id="languageButton" class="icon-button" type="button" aria-label="Switch to English">EN</button>
+      <span id="dataSourceBadge" class="source-badge">Demo data</span>
+      <button id="languageButton" class="icon-button" type="button" aria-label="切換為中文">中</button>
     </div>
   </header>
 
   <main class="game-shell">
     <section class="control-strip" aria-labelledby="gameHeading">
       <div>
-        <p id="eyebrow" class="eyebrow">地理接壤挑戰</p>
-        <h1 id="gameHeading">選出所有相鄰地區</h1>
+        <p id="eyebrow" class="eyebrow">Geographic Border Challenge</p>
+        <h1 id="gameHeading">Find every bordering region</h1>
       </div>
       <div class="control-group">
-        <label id="categoryLabel" for="categorySelect">題目分類</label>
+        <label id="categoryLabel" for="categorySelect">Question category</label>
         <select id="categorySelect"></select>
       </div>
     </section>
@@ -53,13 +56,13 @@
     <section class="candidate-panel" aria-labelledby="candidateHeading">
       <div class="panel-heading">
         <div>
-          <p id="candidateKicker" class="section-kicker">候選區</p>
-          <h2 id="candidateHeading">點選或拖曳答案</h2>
+            <p id="candidateKicker" class="section-kicker">Candidates</p>
+            <h2 id="candidateHeading">Tap or drag an answer</h2>
         </div>
         <div class="candidate-nav">
           <span id="candidateCount" aria-live="polite"></span>
-          <button id="scrollLeft" class="round-button" type="button" aria-label="向左捲動">‹</button>
-          <button id="scrollRight" class="round-button" type="button" aria-label="向右捲動">›</button>
+          <button id="scrollLeft" class="round-button" type="button" aria-label="Scroll left">‹</button>
+          <button id="scrollRight" class="round-button" type="button" aria-label="Scroll right">›</button>
         </div>
       </div>
       <div id="candidateRail" class="candidate-rail" role="list"></div>
@@ -68,19 +71,19 @@
     <section class="play-section">
       <div class="question-meta">
         <span id="questionNumber">QUESTION 01</span>
-        <span id="selectionCount">已選 0</span>
+        <span id="selectionCount">0 selected</span>
       </div>
 
-      <div id="answerRing" class="answer-ring" aria-label="答案放置區">
+      <div id="answerRing" class="answer-ring" aria-label="Answer area">
         <div class="orbit-line orbit-line-outer" aria-hidden="true"></div>
         <div class="orbit-line orbit-line-inner" aria-hidden="true"></div>
         <div id="selectedLayer" class="selected-layer"></div>
         <button id="targetCard" class="target-card" type="button" disabled>
-          <small id="targetLabel">題目</small>
-          <strong id="targetName">青海</strong>
-          <span id="targetHint">與哪些地區接壤？</span>
+          <small id="targetLabel">QUESTION</small>
+          <strong id="targetName">Qinghai</strong>
+          <span id="targetHint">Which regions share a border?</span>
         </button>
-        <div id="dropHint" class="drop-hint">拖曳至此</div>
+        <div id="dropHint" class="drop-hint">DROP HERE</div>
       </div>
 
       <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
@@ -88,32 +91,30 @@
       <section id="answerMapPanel" class="answer-map-panel" aria-labelledby="answerMapHeading" hidden>
         <div class="answer-map-heading">
           <div>
-            <p id="answerMapKicker" class="section-kicker">答案地圖</p>
-            <h2 id="answerMapHeading">正確的相鄰地區</h2>
+            <p id="answerMapKicker" class="section-kicker">ANSWER MAP</p>
+            <h2 id="answerMapHeading">The correct bordering regions</h2>
           </div>
-          <div class="map-legend" aria-label="地圖圖例">
-            <span><i class="legend-target"></i><b id="legendTarget">題目地區</b></span>
-            <span><i class="legend-correct"></i><b id="legendCorrect">正確鄰居</b></span>
-            <span id="legendWrongItem"><i class="legend-wrong"></i><b id="legendWrong">誤選地區</b></span>
+          <div class="map-legend" aria-label="Map legend">
+            <span><i class="legend-target"></i><b id="legendTarget">Target</b></span>
+            <span><i class="legend-correct"></i><b id="legendCorrect">Correct neighbors</b></span>
+            <span id="legendWrongItem"><i class="legend-wrong"></i><b id="legendWrong">Incorrect choices</b></span>
           </div>
         </div>
-        <div id="answerMap" class="answer-map" role="img" aria-label="作答結果地圖"></div>
+        <div id="answerMap" class="answer-map" role="img" aria-label="Answer map"></div>
         <p id="mapSource" class="map-source"></p>
       </section>
 
       <div class="game-actions">
-        <button id="resetButton" class="button button-secondary" type="button">重新選擇</button>
-        <button id="submitButton" class="button button-primary" type="button">提交答案</button>
-        <button id="nextButton" class="button button-secondary" type="button">下一題</button>
+        <button id="resetButton" class="button button-secondary" type="button">Reset</button>
+        <button id="submitButton" class="button button-primary" type="button">Check answer</button>
+        <button id="nextButton" class="button button-secondary" type="button">Next question</button>
       </div>
-      <p id="instruction" class="instruction">答案送出前不會顯示正誤。點選已放入的答案可將它移回候選區。</p>
+      <p id="instruction" class="instruction">Answers are checked only after submission. Tap a selected answer to return it to the candidate bar.</p>
     </section>
   </main>
 
   <footer>
     <span>P124 誰是鄰居｜Who Borders</span>
-    <span aria-hidden="true">·</span>
-    <a href="https://tcubmdsbilab.github.io/P101/" target="_blank" rel="noopener">慈濟大學 經營管理學系｜好玩實驗室 作品</a>
   </footer>
   <script src="vendor/leaflet.js"></script>
 </body>

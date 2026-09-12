@@ -1,10 +1,12 @@
-# P124 誰是鄰居｜Who Borders V0.5
+# P124 誰是鄰居｜Who Borders V0.6
 
 手機優先的雙語地理接壤辨識遊戲。候選答案位於上方可左右滑動的橫幅；點選或拖曳答案後，答案會排列在中央題目的圓角同心框周圍。
 
-## V0.5 功能
+## V0.6 功能
 
 - 中英文介面切換。
+- 首次開啟預設使用英文；切換後會記住使用者選擇。
+- 實驗室品牌連結由頁尾移至左上方、位於系統名稱右側。
 - 題目大分類選擇。
 - 點選答案及桌機拖曳作答。
 - 提交前不顯示正誤。
@@ -28,7 +30,7 @@
 - 未來新增三個洲別分類及題目時，只需執行 SQL，不必再次更新地圖程式。
 - 所有地圖按分類延遲載入，不會在開啟網站時一次下載。
 
-目前中國大陸省級行政區、台灣縣市、美國各州及歐洲國家題目均可顯示答案地圖；非洲、亞洲與南美洲圖資已就緒，題庫分類尚待後續 SQL 加入。
+目前各分類均可顯示答案地圖；完整題庫可透過 `database/10` 至 `database/14` 的增量 SQL 逐步加入。
 
 ## 候選數量規則
 
@@ -97,6 +99,10 @@ database/
   08_SeedData.sql
   09_AddTaiwanCounties.sql
   10_CompleteTaiwanQuestions.sql
+  11_AddAfricaAsiaSouthAmericaSamples.sql
+  12_CompleteMainlandChinaQuestions.sql
+  13_CompleteAsiaQuestions.sql
+  14_CompleteAfricaQuestions.sql
   90_P124_Permissions.sql
   99_P124_HealthCheck.sql
 ```

@@ -16,7 +16,7 @@
   };
 
   const state = {
-    lang: localStorage.getItem("P124Language") || "zh",
+    lang: localStorage.getItem("P124LanguageV06") || "en",
     categories: [], questions: [], category: null, question: null, candidates: [], selected: [],
     checked: false, source: "demo", questionIndex: 0,
     geoData: new Map(), answerMap: null, answerMapLayer: null, answerLabelLayer: null, mapRequest: 0
@@ -485,7 +485,7 @@
     });
     ui.language.addEventListener("click", () => {
       state.lang = state.lang === "zh" ? "en" : "zh";
-      localStorage.setItem("P124Language", state.lang);
+      localStorage.setItem("P124LanguageV06", state.lang);
       render();
       if (state.checked) renderAnswerMap();
     });

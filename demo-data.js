@@ -84,8 +84,8 @@ window.P124_DEMO_DATA = {
       CategoryCode: "TW_COUNTIES",
       CategoryNameZh: "台灣縣市",
       CategoryNameEn: "Taiwan Counties and Cities",
-      DescriptionZh: "台灣22個縣市的陸地接壤關係",
-      DescriptionEn: "Land-border relationships among Taiwan's 22 counties and cities",
+      DescriptionZh: "台灣22個縣市的陸地接壤關係（包含無陸地相鄰縣市）",
+      DescriptionEn: "Land-border relationships among Taiwan's 22 counties and cities, including regions with no land-border neighbors",
       SortOrder: 40,
       IsActive: true,
       Items: [
@@ -99,7 +99,8 @@ window.P124_DEMO_DATA = {
         ["TW-PEN","澎湖縣","Penghu County"],["TW-PIF","屏東縣","Pingtung County"],
         ["TW-TXG","臺中市","Taichung City"],["TW-TNN","臺南市","Tainan City"],
         ["TW-TPE","臺北市","Taipei City"],["TW-TTT","臺東縣","Taitung County"],
-        ["TW-TAO","桃園市","Taoyuan City"],["TW-YUN","雲林縣","Yunlin County"]
+        ["TW-TAO","桃園市","Taoyuan City"],["TW-YUN","雲林縣","Yunlin County"],
+        ["TW-NONE","無陸地相鄰縣市","No land-border neighbors"]
       ].map(([id, zh, en]) => ({id, zh, en}))
     }
   ],
@@ -110,8 +111,27 @@ window.P124_DEMO_DATA = {
     {QuestionID: 4, CategoryID: 2, TargetItemID: "US-TN", CorrectItemIDs: ["US-KY","US-VA","US-NC","US-GA","US-AL","US-MS","US-AR","US-MO"], DistractorItemIDs: ["US-WV","US-SC","US-OK","US-IL","US-IN"], IsActive: true},
     {QuestionID: 5, CategoryID: 3, TargetItemID: "EU-PT", CorrectItemIDs: ["EU-ES"], DistractorItemIDs: ["EU-FR","EU-IT","EU-IE"], IsActive: true},
     {QuestionID: 6, CategoryID: 3, TargetItemID: "EU-DE", CorrectItemIDs: ["EU-DK","EU-PL","EU-CZ","EU-AT","EU-CH","EU-FR","EU-LU","EU-BE","EU-NL"], DistractorItemIDs: ["EU-LI","EU-IT","EU-SK","EU-HU","EU-SE","EU-NO"], IsActive: true},
-    {QuestionID: 7, CategoryID: 4, TargetItemID: "TW-HUA", CorrectItemIDs: ["TW-ILA","TW-TXG","TW-NAN","TW-KHH","TW-TTT"], DistractorItemIDs: ["TW-TAO","TW-HSQ","TW-CYQ","TW-PIF"], IsActive: true},
-    {QuestionID: 8, CategoryID: 4, TargetItemID: "TW-CYQ", CorrectItemIDs: ["TW-YUN","TW-NAN","TW-KHH","TW-TNN","TW-CYI"], DistractorItemIDs: ["TW-CHA","TW-TXG","TW-PIF","TW-TTT"], IsActive: true},
-    {QuestionID: 9, CategoryID: 4, TargetItemID: "TW-TPE", CorrectItemIDs: ["TW-NWT"], DistractorItemIDs: ["TW-KEE","TW-TAO","TW-ILA"], IsActive: true}
+    {QuestionID: 7, CategoryID: 4, TargetItemID: "TW-CHA", CorrectItemIDs: ["TW-NAN","TW-YUN","TW-TXG"], DistractorItemIDs: ["TW-MIA","TW-CYQ","TW-TNN","TW-KHH"], IsActive: true},
+    {QuestionID: 8, CategoryID: 4, TargetItemID: "TW-CYI", CorrectItemIDs: ["TW-CYQ"], DistractorItemIDs: ["TW-YUN","TW-NAN","TW-TNN","TW-KHH"], IsActive: true},
+    {QuestionID: 9, CategoryID: 4, TargetItemID: "TW-CYQ", CorrectItemIDs: ["TW-YUN","TW-NAN","TW-KHH","TW-TNN","TW-CYI"], DistractorItemIDs: ["TW-CHA","TW-TXG","TW-PIF","TW-TTT"], IsActive: true},
+    {QuestionID: 10, CategoryID: 4, TargetItemID: "TW-HSQ", CorrectItemIDs: ["TW-ILA","TW-TXG","TW-TAO","TW-MIA","TW-HSZ"], DistractorItemIDs: ["TW-NWT","TW-KEE","TW-CHA","TW-HUA"], IsActive: true},
+    {QuestionID: 11, CategoryID: 4, TargetItemID: "TW-HSZ", CorrectItemIDs: ["TW-MIA","TW-HSQ"], DistractorItemIDs: ["TW-TAO","TW-TXG","TW-ILA","TW-NWT"], IsActive: true},
+    {QuestionID: 12, CategoryID: 4, TargetItemID: "TW-HUA", CorrectItemIDs: ["TW-ILA","TW-TXG","TW-NAN","TW-KHH","TW-TTT"], DistractorItemIDs: ["TW-TAO","TW-HSQ","TW-CYQ","TW-PIF"], IsActive: true},
+    {QuestionID: 13, CategoryID: 4, TargetItemID: "TW-ILA", CorrectItemIDs: ["TW-NWT","TW-TXG","TW-TAO","TW-HUA","TW-HSQ"], DistractorItemIDs: ["TW-TPE","TW-KEE","TW-MIA","TW-NAN"], IsActive: true},
+    {QuestionID: 14, CategoryID: 4, TargetItemID: "TW-KEE", CorrectItemIDs: ["TW-NWT"], DistractorItemIDs: ["TW-TPE","TW-TAO","TW-ILA","TW-HSQ"], IsActive: true},
+    {QuestionID: 15, CategoryID: 4, TargetItemID: "TW-KHH", CorrectItemIDs: ["TW-NAN","TW-CYQ","TW-TNN","TW-TTT","TW-HUA","TW-PIF"], DistractorItemIDs: ["TW-YUN","TW-CHA","TW-TXG","TW-PEN"], IsActive: true},
+    {QuestionID: 16, CategoryID: 4, TargetItemID: "TW-KIN", CorrectItemIDs: ["TW-NONE"], DistractorItemIDs: ["TW-PEN","TW-LIE","TW-CHA","TW-CYQ"], IsActive: true},
+    {QuestionID: 17, CategoryID: 4, TargetItemID: "TW-LIE", CorrectItemIDs: ["TW-NONE"], DistractorItemIDs: ["TW-KIN","TW-PEN","TW-KEE","TW-NWT"], IsActive: true},
+    {QuestionID: 18, CategoryID: 4, TargetItemID: "TW-MIA", CorrectItemIDs: ["TW-TXG","TW-HSZ","TW-HSQ"], DistractorItemIDs: ["TW-TAO","TW-CHA","TW-NAN","TW-NWT"], IsActive: true},
+    {QuestionID: 19, CategoryID: 4, TargetItemID: "TW-NAN", CorrectItemIDs: ["TW-CHA","TW-YUN","TW-TXG","TW-CYQ","TW-KHH","TW-HUA"], DistractorItemIDs: ["TW-MIA","TW-TNN","TW-TTT","TW-ILA"], IsActive: true},
+    {QuestionID: 20, CategoryID: 4, TargetItemID: "TW-NWT", CorrectItemIDs: ["TW-ILA","TW-KEE","TW-TPE","TW-TAO"], DistractorItemIDs: ["TW-HSQ","TW-HSZ","TW-MIA","TW-TXG"], IsActive: true},
+    {QuestionID: 21, CategoryID: 4, TargetItemID: "TW-PEN", CorrectItemIDs: ["TW-NONE"], DistractorItemIDs: ["TW-CYQ","TW-YUN","TW-TNN","TW-KHH"], IsActive: true},
+    {QuestionID: 22, CategoryID: 4, TargetItemID: "TW-PIF", CorrectItemIDs: ["TW-KHH","TW-TTT"], DistractorItemIDs: ["TW-TNN","TW-CYQ","TW-HUA","TW-PEN"], IsActive: true},
+    {QuestionID: 23, CategoryID: 4, TargetItemID: "TW-TXG", CorrectItemIDs: ["TW-ILA","TW-CHA","TW-NAN","TW-MIA","TW-HUA","TW-HSQ"], DistractorItemIDs: ["TW-TAO","TW-HSZ","TW-YUN","TW-KHH"], IsActive: true},
+    {QuestionID: 24, CategoryID: 4, TargetItemID: "TW-TNN", CorrectItemIDs: ["TW-CYQ","TW-KHH"], DistractorItemIDs: ["TW-YUN","TW-CHA","TW-PIF","TW-PEN"], IsActive: true},
+    {QuestionID: 25, CategoryID: 4, TargetItemID: "TW-TPE", CorrectItemIDs: ["TW-NWT"], DistractorItemIDs: ["TW-KEE","TW-TAO","TW-ILA"], IsActive: true},
+    {QuestionID: 26, CategoryID: 4, TargetItemID: "TW-TTT", CorrectItemIDs: ["TW-KHH","TW-HUA","TW-PIF"], DistractorItemIDs: ["TW-NAN","TW-CYQ","TW-TNN","TW-PEN"], IsActive: true},
+    {QuestionID: 27, CategoryID: 4, TargetItemID: "TW-TAO", CorrectItemIDs: ["TW-ILA","TW-NWT","TW-HSQ"], DistractorItemIDs: ["TW-TPE","TW-KEE","TW-MIA","TW-TXG"], IsActive: true},
+    {QuestionID: 28, CategoryID: 4, TargetItemID: "TW-YUN", CorrectItemIDs: ["TW-CHA","TW-NAN","TW-CYQ"], DistractorItemIDs: ["TW-TXG","TW-MIA","TW-TNN","TW-KHH"], IsActive: true}
   ]
 };

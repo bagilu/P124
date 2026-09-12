@@ -24,7 +24,12 @@
 
   const mapFiles = {
     CN_PROVINCES: "geo/CN_PROVINCES.geojson",
-    TW_COUNTIES: "geo/TW_COUNTIES.geojson"
+    TW_COUNTIES: "geo/TW_COUNTIES.geojson",
+    US_STATES: "geo/US_STATES.geojson",
+    EUROPE_COUNTRIES: "geo/EUROPE_COUNTRIES.geojson",
+    AFRICA_COUNTRIES: "geo/AFRICA_COUNTRIES.geojson",
+    ASIA_COUNTRIES: "geo/ASIA_COUNTRIES.geojson",
+    SOUTH_AMERICA_COUNTRIES: "geo/SOUTH_AMERICA_COUNTRIES.geojson"
   };
 
   const mapSources = {
@@ -37,6 +42,31 @@
       zh: "邊界資料：內政部國土測繪中心（已簡化）",
       en: "Boundary data: National Land Surveying and Mapping Center (simplified)",
       url: "https://data.gov.tw/dataset/7442"
+    },
+    US_STATES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    EUROPE_COUNTRIES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    AFRICA_COUNTRIES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    ASIA_COUNTRIES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    SOUTH_AMERICA_COUNTRIES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
     }
   };
 
@@ -196,9 +226,11 @@
         interactive: false
       }).addTo(map);
       state.answerLabelLayer = L.layerGroup();
+      const names = itemMap();
       data.features.filter((feature) => labeledIds.has(feature.properties.id)).forEach((feature) => {
         const properties = feature.properties;
-        const label = state.lang === "zh" ? properties.zh : properties.en;
+        const catalogItem = names.get(properties.id);
+        const label = catalogItem ? nameFor(catalogItem) : (state.lang === "zh" ? properties.zh : properties.en);
         L.marker([properties.labelLat, properties.labelLng], {
           interactive: false,
           icon: L.divIcon({className: "p124-map-label", html: escapeHtml(label), iconSize: null})
@@ -231,7 +263,7 @@
     const minimumTotal = correct.length + preferred.length;
     const requestedTotal = Math.max(rules.total, minimumTotal);
     const blocked = new Set([question.TargetItemID, ...correct, ...preferred]);
-    const randomPool = shuffle(category.Items.map((item) => item.id).filter((id) => !blocked.has(id)));
+    const randomPool = shuffle(category.Items.map((item) => item.id).filter((id) => !blocked.has(id) && !id.endsWith("-NONE")));
     const general = randomPool.slice(0, Math.max(0, requestedTotal - minimumTotal));
     return shuffle([...correct, ...preferred, ...general]);
   }

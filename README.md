@@ -1,8 +1,8 @@
-# P124 誰是鄰居｜Who Borders V0.6
+# P124 誰是鄰居｜Who Borders V0.7
 
 手機優先的雙語地理接壤辨識遊戲。候選答案位於上方可左右滑動的橫幅；點選或拖曳答案後，答案會排列在中央題目的圓角同心框周圍。
 
-## V0.6 功能
+## V0.7 功能
 
 - 中英文介面切換。
 - 首次開啟預設使用英文；切換後會記住使用者選擇。
@@ -12,7 +12,7 @@
 - 提交前不顯示正誤。
 - 完整比對錯選與遺漏答案。
 - 依正確相鄰者數量，自動決定候選總數及人工誘答數。
-- 內建28題資料；尚未連接 Supabase 也可直接試玩。
+- 內建51題資料；尚未連接 Supabase 也可直接試玩。
 - Supabase 兩表 Schema、RLS、權限、示範 INSERT 與健康檢查。
 - 中國大陸省級行政區答案地圖，首批支援青海與四川題目。
 - 送出答案後，自動顯示題目地區、全部正確鄰居與誤選地區。
@@ -27,10 +27,12 @@
 - 新增美國50州答案地圖，現有加州與田納西州題目可直接顯示。
 - 新增歐洲43國答案地圖，現有葡萄牙與德國題目可直接顯示。
 - 預先建立非洲54國、亞洲49個國家／地區、南美洲12國的簡化圖資。
-- 未來新增三個洲別分類及題目時，只需執行 SQL，不必再次更新地圖程式。
+- 新增「北美洲、中美洲與加勒比海國家」分類，收錄23個主權國家及完整題目。
+- 加勒比海島國仍完整收錄；海地與多明尼加彼此接壤，其餘11個島國使用「無陸地相鄰國家」。
+- 北美洲、中美洲與加勒比海圖資由124,348個頂點簡化為14,519個，減少約88.3%。
 - 所有地圖按分類延遲載入，不會在開啟網站時一次下載。
 
-目前各分類均可顯示答案地圖；完整題庫可透過 `database/10` 至 `database/14` 的增量 SQL 逐步加入。
+目前各分類均可顯示答案地圖；完整題庫可透過 `database/10` 至 `database/18` 的增量 SQL 逐步加入。
 
 ## 候選數量規則
 
@@ -83,6 +85,8 @@ geo/
   ASIA_COUNTRIES.js
   SOUTH_AMERICA_COUNTRIES.geojson
   SOUTH_AMERICA_COUNTRIES.js
+  NORTH_CENTRAL_CARIBBEAN_COUNTRIES.geojson
+  NORTH_CENTRAL_CARIBBEAN_COUNTRIES.js
   SOURCE.md
 vendor/
   leaflet.css
@@ -103,6 +107,10 @@ database/
   12_CompleteMainlandChinaQuestions.sql
   13_CompleteAsiaQuestions.sql
   14_CompleteAfricaQuestions.sql
+  15_CompleteEuropeQuestions.sql
+  16_CompleteUSQuestionsAndCategoryOrder.sql
+  17_CompleteSouthAmericaQuestions.sql
+  18_AddNorthCentralCaribbean.sql
   90_P124_Permissions.sql
   99_P124_HealthCheck.sql
 ```
@@ -115,6 +123,6 @@ database/
 
 - 中國大陸省級行政區邊界：Natural Earth 5.1.1，Public Domain。
 - 台灣縣市界線：內政部國土測繪中心，政府資料開放授權條款第1版。
-- 美國各州、歐洲、非洲、亞洲與南美洲：Natural Earth 5.1.1，Public Domain。
+- 美國各州、歐洲、非洲、亞洲、南美洲、北美洲、中美洲與加勒比海：Natural Earth 5.1.1，Public Domain。
 - 地圖互動：Leaflet 1.9.4，BSD-2-Clause。
 - 地圖僅供教學示意；政治邊界呈現遵循所採資料來源，不作為法律認定。

@@ -3,11 +3,11 @@ window.P124_DEMO_DATA = {
     {
       CategoryID: 1,
       CategoryCode: "CN_PROVINCES",
-      CategoryNameZh: "中國大陸省級行政區",
+      CategoryNameZh: "大陸區域省級行政區",
       CategoryNameEn: "Mainland China Divisions",
       DescriptionZh: "示範中國大陸省級行政區的陸地接壤關係",
       DescriptionEn: "Land-border relationships among mainland China's provincial-level divisions",
-      SortOrder: 10,
+      SortOrder: 70,
       IsActive: true,
       Items: [
         ["CN-BJ","北京","Beijing"],["CN-TJ","天津","Tianjin"],["CN-HE","河北","Hebei"],
@@ -30,7 +30,7 @@ window.P124_DEMO_DATA = {
       CategoryNameEn: "U.S. States",
       DescriptionZh: "美國各州的陸地接壤關係",
       DescriptionEn: "Land-border relationships among U.S. states",
-      SortOrder: 20,
+      SortOrder: 80,
       IsActive: true,
       Items: [
         ["US-AL","阿拉巴馬州","Alabama"],["US-AK","阿拉斯加州","Alaska"],["US-AZ","亞利桑那州","Arizona"],
@@ -59,7 +59,7 @@ window.P124_DEMO_DATA = {
       CategoryNameEn: "European Countries",
       DescriptionZh: "歐洲國家的陸地接壤關係",
       DescriptionEn: "Land-border relationships among European countries",
-      SortOrder: 30,
+      SortOrder: 40,
       IsActive: true,
       Items: [
         ["EU-AL","阿爾巴尼亞","Albania"],["EU-AD","安道爾","Andorra"],["EU-AT","奧地利","Austria"],
@@ -86,7 +86,7 @@ window.P124_DEMO_DATA = {
       CategoryNameEn: "Taiwan Counties and Cities",
       DescriptionZh: "台灣22個縣市的陸地接壤關係（包含無陸地相鄰縣市）",
       DescriptionEn: "Land-border relationships among Taiwan's 22 counties and cities, including regions with no land-border neighbors",
-      SortOrder: 40,
+      SortOrder: 10,
       IsActive: true,
       Items: [
         ["TW-CHA","彰化縣","Changhua County"],["TW-CYI","嘉義市","Chiayi City"],
@@ -101,6 +101,29 @@ window.P124_DEMO_DATA = {
         ["TW-TPE","臺北市","Taipei City"],["TW-TTT","臺東縣","Taitung County"],
         ["TW-TAO","桃園市","Taoyuan City"],["TW-YUN","雲林縣","Yunlin County"],
         ["TW-NONE","無陸地相鄰縣市","No land-border neighbors"]
+      ].map(([id, zh, en]) => ({id, zh, en}))
+    },
+    {
+      CategoryID: 5,
+      CategoryCode: "NORTH_CENTRAL_CARIBBEAN_COUNTRIES",
+      CategoryNameZh: "北美洲、中美洲與加勒比海國家",
+      CategoryNameEn: "North, Central American & Caribbean Countries",
+      DescriptionZh: "北美洲、中美洲與加勒比海23個主權國家之間的陸地接壤關係",
+      DescriptionEn: "Land-border relationships among 23 sovereign countries in North America, Central America and the Caribbean",
+      SortOrder: 60,
+      IsActive: true,
+      Items: [
+        ["NA-AG","安地卡及巴布達","Antigua and Barbuda"],["NA-BB","巴貝多","Barbados"],
+        ["NA-BS","巴哈馬","Bahamas"],["NA-BZ","貝里斯","Belize"],["NA-CA","加拿大","Canada"],
+        ["NA-CR","哥斯大黎加","Costa Rica"],["NA-CU","古巴","Cuba"],["NA-DM","多米尼克","Dominica"],
+        ["NA-DO","多明尼加","Dominican Republic"],["NA-GD","格瑞那達","Grenada"],
+        ["NA-GT","瓜地馬拉","Guatemala"],["NA-HN","宏都拉斯","Honduras"],["NA-HT","海地","Haiti"],
+        ["NA-JM","牙買加","Jamaica"],["NA-KN","聖克里斯多福及尼維斯","Saint Kitts and Nevis"],
+        ["NA-LC","聖露西亞","Saint Lucia"],["NA-MX","墨西哥","Mexico"],["NA-NI","尼加拉瓜","Nicaragua"],
+        ["NA-PA","巴拿馬","Panama"],["NA-SV","薩爾瓦多","El Salvador"],
+        ["NA-TT","千里達及托巴哥","Trinidad and Tobago"],["NA-US","美國","United States"],
+        ["NA-VC","聖文森及格瑞那丁","Saint Vincent and the Grenadines"],
+        ["NA-NONE","無陸地相鄰國家","No land-border neighbors"]
       ].map(([id, zh, en]) => ({id, zh, en}))
     }
   ],
@@ -132,6 +155,29 @@ window.P124_DEMO_DATA = {
     {QuestionID: 25, CategoryID: 4, TargetItemID: "TW-TPE", CorrectItemIDs: ["TW-NWT"], DistractorItemIDs: ["TW-KEE","TW-TAO","TW-ILA"], IsActive: true},
     {QuestionID: 26, CategoryID: 4, TargetItemID: "TW-TTT", CorrectItemIDs: ["TW-KHH","TW-HUA","TW-PIF"], DistractorItemIDs: ["TW-NAN","TW-CYQ","TW-TNN","TW-PEN"], IsActive: true},
     {QuestionID: 27, CategoryID: 4, TargetItemID: "TW-TAO", CorrectItemIDs: ["TW-ILA","TW-NWT","TW-HSQ"], DistractorItemIDs: ["TW-TPE","TW-KEE","TW-MIA","TW-TXG"], IsActive: true},
-    {QuestionID: 28, CategoryID: 4, TargetItemID: "TW-YUN", CorrectItemIDs: ["TW-CHA","TW-NAN","TW-CYQ"], DistractorItemIDs: ["TW-TXG","TW-MIA","TW-TNN","TW-KHH"], IsActive: true}
+    {QuestionID: 28, CategoryID: 4, TargetItemID: "TW-YUN", CorrectItemIDs: ["TW-CHA","TW-NAN","TW-CYQ"], DistractorItemIDs: ["TW-TXG","TW-MIA","TW-TNN","TW-KHH"], IsActive: true},
+    {QuestionID: 29, CategoryID: 5, TargetItemID: "NA-AG", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-KN","NA-DM","NA-LC","NA-VC","NA-BB","NA-GD"], IsActive: true},
+    {QuestionID: 30, CategoryID: 5, TargetItemID: "NA-BB", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-LC","NA-VC","NA-GD","NA-DM","NA-TT","NA-AG"], IsActive: true},
+    {QuestionID: 31, CategoryID: 5, TargetItemID: "NA-BS", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-CU","NA-US","NA-HT","NA-DO","NA-JM","NA-MX"], IsActive: true},
+    {QuestionID: 32, CategoryID: 5, TargetItemID: "NA-BZ", CorrectItemIDs: ["NA-GT","NA-MX"], DistractorItemIDs: ["NA-HN","NA-SV","NA-NI","NA-CR","NA-CU","NA-JM"], IsActive: true},
+    {QuestionID: 33, CategoryID: 5, TargetItemID: "NA-CA", CorrectItemIDs: ["NA-US"], DistractorItemIDs: ["NA-MX","NA-BS","NA-CU","NA-BZ","NA-GT","NA-HT"], IsActive: true},
+    {QuestionID: 34, CategoryID: 5, TargetItemID: "NA-CR", CorrectItemIDs: ["NA-NI","NA-PA"], DistractorItemIDs: ["NA-HN","NA-SV","NA-GT","NA-BZ","NA-MX","NA-CU"], IsActive: true},
+    {QuestionID: 35, CategoryID: 5, TargetItemID: "NA-CU", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-BS","NA-HT","NA-JM","NA-US","NA-MX","NA-DO"], IsActive: true},
+    {QuestionID: 36, CategoryID: 5, TargetItemID: "NA-DM", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-AG","NA-LC","NA-VC","NA-BB","NA-GD","NA-KN"], IsActive: true},
+    {QuestionID: 37, CategoryID: 5, TargetItemID: "NA-DO", CorrectItemIDs: ["NA-HT"], DistractorItemIDs: ["NA-CU","NA-JM","NA-BS","NA-DM","NA-AG","NA-TT"], IsActive: true},
+    {QuestionID: 38, CategoryID: 5, TargetItemID: "NA-GD", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-TT","NA-VC","NA-LC","NA-BB","NA-DM","NA-AG"], IsActive: true},
+    {QuestionID: 39, CategoryID: 5, TargetItemID: "NA-GT", CorrectItemIDs: ["NA-BZ","NA-HN","NA-MX","NA-SV"], DistractorItemIDs: ["NA-NI","NA-CR","NA-PA","NA-CU","NA-JM","NA-HT"], IsActive: true},
+    {QuestionID: 40, CategoryID: 5, TargetItemID: "NA-HN", CorrectItemIDs: ["NA-GT","NA-NI","NA-SV"], DistractorItemIDs: ["NA-BZ","NA-MX","NA-CR","NA-PA","NA-CU","NA-JM"], IsActive: true},
+    {QuestionID: 41, CategoryID: 5, TargetItemID: "NA-HT", CorrectItemIDs: ["NA-DO"], DistractorItemIDs: ["NA-CU","NA-JM","NA-BS","NA-TT","NA-DM","NA-PA"], IsActive: true},
+    {QuestionID: 42, CategoryID: 5, TargetItemID: "NA-JM", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-CU","NA-HT","NA-DO","NA-BS","NA-MX","NA-PA"], IsActive: true},
+    {QuestionID: 43, CategoryID: 5, TargetItemID: "NA-KN", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-AG","NA-DM","NA-LC","NA-VC","NA-BS","NA-BB"], IsActive: true},
+    {QuestionID: 44, CategoryID: 5, TargetItemID: "NA-LC", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-DM","NA-VC","NA-BB","NA-GD","NA-AG","NA-TT"], IsActive: true},
+    {QuestionID: 45, CategoryID: 5, TargetItemID: "NA-MX", CorrectItemIDs: ["NA-BZ","NA-GT","NA-US"], DistractorItemIDs: ["NA-CA","NA-CR","NA-HN","NA-SV","NA-NI","NA-PA"], IsActive: true},
+    {QuestionID: 46, CategoryID: 5, TargetItemID: "NA-NI", CorrectItemIDs: ["NA-CR","NA-HN"], DistractorItemIDs: ["NA-GT","NA-SV","NA-BZ","NA-PA","NA-MX","NA-CU"], IsActive: true},
+    {QuestionID: 47, CategoryID: 5, TargetItemID: "NA-PA", CorrectItemIDs: ["NA-CR"], DistractorItemIDs: ["NA-NI","NA-HN","NA-SV","NA-GT","NA-MX","NA-CU"], IsActive: true},
+    {QuestionID: 48, CategoryID: 5, TargetItemID: "NA-SV", CorrectItemIDs: ["NA-GT","NA-HN"], DistractorItemIDs: ["NA-BZ","NA-MX","NA-NI","NA-CR","NA-PA","NA-CU"], IsActive: true},
+    {QuestionID: 49, CategoryID: 5, TargetItemID: "NA-TT", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-GD","NA-VC","NA-BB","NA-LC","NA-DM","NA-AG"], IsActive: true},
+    {QuestionID: 50, CategoryID: 5, TargetItemID: "NA-US", CorrectItemIDs: ["NA-CA","NA-MX"], DistractorItemIDs: ["NA-BZ","NA-GT","NA-BS","NA-CU","NA-JM","NA-PA"], IsActive: true},
+    {QuestionID: 51, CategoryID: 5, TargetItemID: "NA-VC", CorrectItemIDs: ["NA-NONE"], DistractorItemIDs: ["NA-LC","NA-GD","NA-BB","NA-TT","NA-DM","NA-AG"], IsActive: true}
   ]
 };

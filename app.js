@@ -29,7 +29,8 @@
     EUROPE_COUNTRIES: "geo/EUROPE_COUNTRIES.geojson",
     AFRICA_COUNTRIES: "geo/AFRICA_COUNTRIES.geojson",
     ASIA_COUNTRIES: "geo/ASIA_COUNTRIES.geojson",
-    SOUTH_AMERICA_COUNTRIES: "geo/SOUTH_AMERICA_COUNTRIES.geojson"
+    SOUTH_AMERICA_COUNTRIES: "geo/SOUTH_AMERICA_COUNTRIES.geojson",
+    NORTH_CENTRAL_CARIBBEAN_COUNTRIES: "geo/NORTH_CENTRAL_CARIBBEAN_COUNTRIES.geojson"
   };
 
   const mapSources = {
@@ -64,6 +65,11 @@
       url: "https://www.naturalearthdata.com/"
     },
     SOUTH_AMERICA_COUNTRIES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    NORTH_CENTRAL_CARIBBEAN_COUNTRIES: {
       zh: "邊界資料：Natural Earth（已簡化）",
       en: "Boundary data: Natural Earth (simplified)",
       url: "https://www.naturalearthdata.com/"
@@ -525,7 +531,10 @@
     } catch (error) {
       console.warn("P124 is using bundled demo data.", error);
     }
-    state.categories = data.categories.map(normalizeCategory).filter((item) => item.IsActive !== false);
+    state.categories = data.categories
+      .map(normalizeCategory)
+      .filter((item) => item.IsActive !== false)
+      .sort((a, b) => Number(a.SortOrder || 0) - Number(b.SortOrder || 0));
     state.questions = data.questions.map(normalizeQuestion).filter((item) => item.IsActive !== false);
     state.category = state.categories[0] || null;
     chooseRandomQuestion(false);

@@ -78,6 +78,29 @@ window.P124_DEMO_DATA = {
         ["EU-CH","瑞士","Switzerland"],["EU-UA","烏克蘭","Ukraine"],["EU-GB","英國","United Kingdom"],
         ["EU-VA","梵蒂岡","Vatican City"]
       ].map(([id, zh, en]) => ({id, zh, en}))
+    },
+    {
+      CategoryID: 4,
+      CategoryCode: "TW_COUNTIES",
+      CategoryNameZh: "台灣縣市",
+      CategoryNameEn: "Taiwan Counties and Cities",
+      DescriptionZh: "台灣22個縣市的陸地接壤關係",
+      DescriptionEn: "Land-border relationships among Taiwan's 22 counties and cities",
+      SortOrder: 40,
+      IsActive: true,
+      Items: [
+        ["TW-CHA","彰化縣","Changhua County"],["TW-CYI","嘉義市","Chiayi City"],
+        ["TW-CYQ","嘉義縣","Chiayi County"],["TW-HSQ","新竹縣","Hsinchu County"],
+        ["TW-HSZ","新竹市","Hsinchu City"],["TW-HUA","花蓮縣","Hualien County"],
+        ["TW-ILA","宜蘭縣","Yilan County"],["TW-KEE","基隆市","Keelung City"],
+        ["TW-KHH","高雄市","Kaohsiung City"],["TW-KIN","金門縣","Kinmen County"],
+        ["TW-LIE","連江縣","Lienchiang County"],["TW-MIA","苗栗縣","Miaoli County"],
+        ["TW-NAN","南投縣","Nantou County"],["TW-NWT","新北市","New Taipei City"],
+        ["TW-PEN","澎湖縣","Penghu County"],["TW-PIF","屏東縣","Pingtung County"],
+        ["TW-TXG","臺中市","Taichung City"],["TW-TNN","臺南市","Tainan City"],
+        ["TW-TPE","臺北市","Taipei City"],["TW-TTT","臺東縣","Taitung County"],
+        ["TW-TAO","桃園市","Taoyuan City"],["TW-YUN","雲林縣","Yunlin County"]
+      ].map(([id, zh, en]) => ({id, zh, en}))
     }
   ],
   questions: [
@@ -86,6 +109,9 @@ window.P124_DEMO_DATA = {
     {QuestionID: 3, CategoryID: 2, TargetItemID: "US-CA", CorrectItemIDs: ["US-OR","US-NV","US-AZ"], DistractorItemIDs: ["US-WA","US-UT","US-NM","US-TX"], IsActive: true},
     {QuestionID: 4, CategoryID: 2, TargetItemID: "US-TN", CorrectItemIDs: ["US-KY","US-VA","US-NC","US-GA","US-AL","US-MS","US-AR","US-MO"], DistractorItemIDs: ["US-WV","US-SC","US-OK","US-IL","US-IN"], IsActive: true},
     {QuestionID: 5, CategoryID: 3, TargetItemID: "EU-PT", CorrectItemIDs: ["EU-ES"], DistractorItemIDs: ["EU-FR","EU-IT","EU-IE"], IsActive: true},
-    {QuestionID: 6, CategoryID: 3, TargetItemID: "EU-DE", CorrectItemIDs: ["EU-DK","EU-PL","EU-CZ","EU-AT","EU-CH","EU-FR","EU-LU","EU-BE","EU-NL"], DistractorItemIDs: ["EU-LI","EU-IT","EU-SK","EU-HU","EU-SE","EU-NO"], IsActive: true}
+    {QuestionID: 6, CategoryID: 3, TargetItemID: "EU-DE", CorrectItemIDs: ["EU-DK","EU-PL","EU-CZ","EU-AT","EU-CH","EU-FR","EU-LU","EU-BE","EU-NL"], DistractorItemIDs: ["EU-LI","EU-IT","EU-SK","EU-HU","EU-SE","EU-NO"], IsActive: true},
+    {QuestionID: 7, CategoryID: 4, TargetItemID: "TW-HUA", CorrectItemIDs: ["TW-ILA","TW-TXG","TW-NAN","TW-KHH","TW-TTT"], DistractorItemIDs: ["TW-TAO","TW-HSQ","TW-CYQ","TW-PIF"], IsActive: true},
+    {QuestionID: 8, CategoryID: 4, TargetItemID: "TW-CYQ", CorrectItemIDs: ["TW-YUN","TW-NAN","TW-KHH","TW-TNN","TW-CYI"], DistractorItemIDs: ["TW-CHA","TW-TXG","TW-PIF","TW-TTT"], IsActive: true},
+    {QuestionID: 9, CategoryID: 4, TargetItemID: "TW-TPE", CorrectItemIDs: ["TW-NWT"], DistractorItemIDs: ["TW-KEE","TW-TAO","TW-ILA"], IsActive: true}
   ]
 };

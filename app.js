@@ -23,7 +23,21 @@
   };
 
   const mapFiles = {
-    CN_PROVINCES: "geo/CN_PROVINCES.geojson"
+    CN_PROVINCES: "geo/CN_PROVINCES.geojson",
+    TW_COUNTIES: "geo/TW_COUNTIES.geojson"
+  };
+
+  const mapSources = {
+    CN_PROVINCES: {
+      zh: "邊界資料：Natural Earth（已簡化）",
+      en: "Boundary data: Natural Earth (simplified)",
+      url: "https://www.naturalearthdata.com/"
+    },
+    TW_COUNTIES: {
+      zh: "邊界資料：內政部國土測繪中心（已簡化）",
+      en: "Boundary data: National Land Surveying and Mapping Center (simplified)",
+      url: "https://data.gov.tw/dataset/7442"
+    }
   };
 
   const copy = {
@@ -39,7 +53,7 @@
       noQuestion: "這個分類目前沒有可用題目。", switchLabel: "Switch to English",
       question: (n) => `題目 ${String(n).padStart(2, "0")}`,
       mapKicker: "答案地圖", mapHeading: "正確的相鄰地區", mapTarget: "題目地區",
-      mapCorrect: "正確鄰居", mapWrong: "誤選地區", mapSource: "邊界資料：Natural Earth（已簡化）"
+      mapCorrect: "正確鄰居", mapWrong: "誤選地區"
     },
     en: {
       sourceDemo: "Demo data", sourceDb: "Supabase data", eyebrow: "Geographic Border Challenge",
@@ -53,7 +67,7 @@
       noQuestion: "There are no available questions in this category.", switchLabel: "切換為中文",
       question: (n) => `QUESTION ${String(n).padStart(2, "0")}`,
       mapKicker: "ANSWER MAP", mapHeading: "The correct bordering regions", mapTarget: "Target",
-      mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices", mapSource: "Boundary data: Natural Earth (simplified)"
+      mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices"
     }
   };
 
@@ -147,8 +161,6 @@
       zoomSnap: 0.25,
       scrollWheelZoom: true
     });
-    L.control.attribution({prefix: false}).addTo(state.answerMap)
-      .addAttribution('<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>');
     return state.answerMap;
   }
 
@@ -391,7 +403,12 @@
     ui.legendTarget.textContent = t.mapTarget;
     ui.legendCorrect.textContent = t.mapCorrect;
     ui.legendWrong.textContent = t.mapWrong;
-    ui.mapSource.textContent = t.mapSource;
+    const source = mapSources[state.category?.CategoryCode];
+    if (source) {
+      ui.mapSource.innerHTML = `<a href="${source.url}" target="_blank" rel="noopener">${escapeHtml(source[state.lang])}</a>`;
+    } else {
+      ui.mapSource.textContent = "";
+    }
     ui.language.textContent = state.lang === "zh" ? "EN" : "中";
     ui.language.setAttribute("aria-label", t.switchLabel);
     ui.badge.textContent = state.source === "database" ? t.sourceDb : t.sourceDemo;

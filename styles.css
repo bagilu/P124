@@ -331,6 +331,7 @@ select {
 }
 
 .map-source { margin: 9px 2px 0; color: var(--muted); font-size: .7rem; text-align: right; }
+.map-source a { color: inherit; text-underline-offset: 3px; }
 .leaflet-container { font-family: inherit; background: #08192a; }
 .leaflet-control-zoom a { background: #102b47; color: var(--text); border-color: var(--line); }
 .leaflet-control-zoom a:hover { background: #17435f; color: var(--cyan); }

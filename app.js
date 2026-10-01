@@ -506,6 +506,8 @@
     document.body.classList.remove("match-waiting");
     rw.locked = false;
     rw.revealed = true;
+    renderCandidates();
+    renderAnswers();
     rw.deadline = Date.now() + 30000;
     ui.submit.disabled = false;
     updateCountdown();

@@ -1,4 +1,4 @@
-# P124 V0.011 - SBI-P-SDS v3.2 Compliance
+# P124 V0.012 - SBI-P-SDS v3.2 Compliance
 
 ## Stable baseline
 
@@ -8,8 +8,8 @@
 
 ## Web versioning
 
-- Visible label: `P124 Web Version V0.011`.
-- `styles.css`, `demo-data.js`, and `app.js` use cache-busting parameter `v=0.011`.
+- Visible label: `P124 Web Version V0.012`.
+- `styles.css`, `demo-data.js`, and `app.js` use cache-busting parameter `v=0.012`.
 - Package version and visible Web Version are aligned.
 
 ## Configuration and delivery

@@ -7,7 +7,7 @@
   <meta name="description" content="P124 誰是鄰居｜Who Borders：辨識地理區域接壤關係的雙語互動遊戲。">
   <title>P124 誰是鄰居｜Who Borders</title>
   <link rel="stylesheet" href="vendor/leaflet.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=0.010">
   <script>
     window.P124_CONFIG_READY = new Promise((resolve) => {
       const script = document.createElement("script");
@@ -17,8 +17,8 @@
       document.head.appendChild(script);
     });
   </script>
-  <script src="demo-data.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="demo-data.js?v=0.010" defer></script>
+  <script src="app.js?v=0.010" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -50,7 +50,21 @@
       <div class="control-group">
         <label id="categoryLabel" for="categorySelect">Question category</label>
         <select id="categorySelect"></select>
+        <button id="redWhiteButton" class="red-white-entry" type="button">
+          <span aria-hidden="true"><i></i><b></b></span>
+          <strong>紅白對抗</strong><small>RED VS. WHITE</small>
+        </button>
       </div>
+    </section>
+
+    <section id="matchScoreboard" class="match-scoreboard" aria-live="polite" hidden>
+      <div class="team-score team-score-red"><span id="redTeamLabel">紅隊</span><strong id="redScore">0</strong></div>
+      <div class="turn-status">
+        <span id="matchRound">第 1 回合</span>
+        <strong id="turnLabel">紅隊第一題</strong>
+        <time id="countdown" class="countdown" datetime="PT30S">00:30</time>
+      </div>
+      <div class="team-score team-score-white"><span id="whiteTeamLabel">白隊</span><strong id="whiteScore">0</strong></div>
     </section>
 
     <section class="candidate-panel" aria-labelledby="candidateHeading">
@@ -115,7 +129,62 @@
 
   <footer>
     <span>P124 誰是鄰居｜Who Borders</span>
+    <span class="web-version">P124 Web Version V0.010</span>
   </footer>
+
+  <div id="redWhiteIntro" class="modal-backdrop" hidden>
+    <section class="modal-card intro-card" role="dialog" aria-modal="true" aria-labelledby="redWhiteTitle">
+      <button id="closeIntroButton" class="modal-close" type="button" aria-label="關閉">×</button>
+      <p class="section-kicker">RED VS. WHITE CHALLENGE</p>
+      <h2 id="redWhiteTitle">紅白對抗</h2>
+      <p id="redWhiteLead" class="modal-lead">分成紅隊與白隊，抽籤決定隊伍。紅隊先攻，依序輪流作答，每隊各三題。</p>
+      <ol id="redWhiteRules" class="rule-list">
+        <li>順序為紅、白、紅、白、紅、白；正式賽六題不重複。</li>
+        <li>每題30秒，時間到自動送出當下答案並計分。</li>
+        <li>找對比例占80分；完全正確加20分；每個錯選扣10分，最低0分。</li>
+        <li>每題最高100分，每隊三題最高300分。</li>
+        <li>總分相同時，紅白各加賽一題，直到分出勝負。</li>
+      </ol>
+      <div class="match-category-field">
+        <label id="matchCategoryLabel" for="matchCategorySelect">比賽區域</label>
+        <select id="matchCategorySelect"></select>
+        <p id="matchCategoryHint"></p>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelMatchButton" class="button button-secondary" type="button">返回一般模式</button>
+        <button id="startMatchButton" class="button button-primary" type="button">開始</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="turnReadyModal" class="modal-backdrop" hidden>
+    <section class="modal-card ready-card" role="dialog" aria-modal="true" aria-labelledby="readyTeamLabel">
+      <div id="readyTeamBadge" class="ready-team-badge">紅</div>
+      <p id="readyRoundLabel" class="section-kicker">第 1 回合</p>
+      <h2 id="readyTeamLabel">紅隊第一題</h2>
+      <p id="readyMessage" class="modal-lead">按下後才會顯示題目，並立即開始30秒倒數。</p>
+      <button id="revealQuestionButton" class="button button-primary button-large" type="button">開始本題</button>
+    </section>
+  </div>
+
+  <div id="matchResultModal" class="modal-backdrop result-backdrop" hidden>
+    <div id="confetti" class="confetti" aria-hidden="true"></div>
+    <section class="modal-card result-card" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <div id="resultTrophy" class="result-trophy" aria-hidden="true">🏆</div>
+      <p class="section-kicker">RED VS. WHITE RESULT</p>
+      <h2 id="resultTitle">紅隊獲勝！</h2>
+      <div class="final-score">
+        <div class="final-red"><span id="resultRedLabel">紅隊</span><strong id="resultRedScore">0</strong></div>
+        <b>—</b>
+        <div class="final-white"><span id="resultWhiteLabel">白隊</span><strong id="resultWhiteScore">0</strong></div>
+      </div>
+      <p id="resultDetail" class="modal-lead"></p>
+      <div class="modal-actions">
+        <button id="exitMatchButton" class="button button-secondary" type="button">返回一般模式</button>
+        <button id="rematchButton" class="button button-primary" type="button">再戰一場</button>
+      </div>
+    </section>
+  </div>
   <script src="vendor/leaflet.js"></script>
 </body>
 </html>

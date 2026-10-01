@@ -12,14 +12,31 @@
     mapPanel: $("#answerMapPanel"), map: $("#answerMap"), mapHeading: $("#answerMapHeading"),
     mapKicker: $("#answerMapKicker"), legendTarget: $("#legendTarget"),
     legendCorrect: $("#legendCorrect"), legendWrong: $("#legendWrong"),
-    legendWrongItem: $("#legendWrongItem"), mapSource: $("#mapSource")
+    legendWrongItem: $("#legendWrongItem"), mapSource: $("#mapSource"),
+    redWhiteButton: $("#redWhiteButton"), matchScoreboard: $("#matchScoreboard"),
+    redScore: $("#redScore"), whiteScore: $("#whiteScore"), matchRound: $("#matchRound"),
+    turnLabel: $("#turnLabel"), countdown: $("#countdown"), intro: $("#redWhiteIntro"),
+    matchCategory: $("#matchCategorySelect"), matchCategoryHint: $("#matchCategoryHint"),
+    closeIntro: $("#closeIntroButton"), cancelMatch: $("#cancelMatchButton"), startMatch: $("#startMatchButton"),
+    readyModal: $("#turnReadyModal"), readyBadge: $("#readyTeamBadge"),
+    readyRound: $("#readyRoundLabel"), readyTeam: $("#readyTeamLabel"), readyMessage: $("#readyMessage"),
+    revealQuestion: $("#revealQuestionButton"), resultModal: $("#matchResultModal"),
+    resultTitle: $("#resultTitle"), resultRedScore: $("#resultRedScore"),
+    resultWhiteScore: $("#resultWhiteScore"), resultDetail: $("#resultDetail"),
+    exitMatch: $("#exitMatchButton"), rematch: $("#rematchButton"), confetti: $("#confetti")
   };
 
   const state = {
     lang: localStorage.getItem("P124LanguageV06") || "en",
     categories: [], questions: [], category: null, question: null, candidates: [], selected: [],
     checked: false, source: "demo", questionIndex: 0,
-    geoData: new Map(), answerMap: null, answerMapLayer: null, answerLabelLayer: null, mapRequest: 0
+    geoData: new Map(), answerMap: null, answerMapLayer: null, answerLabelLayer: null, mapRequest: 0,
+    redWhite: {
+      active: false, scores: {red: 0, white: 0}, turnIndex: 0, overtimeRound: 0,
+      usedQuestionIds: new Set(), deck: [], locked: false, revealed: false,
+      deadline: 0, timerId: null, currentTeam: "red", currentScore: 0,
+      afterSubmit: "next", records: []
+    }
   };
 
   const mapFiles = {
@@ -89,7 +106,15 @@
       noQuestion: "這個分類目前沒有可用題目。", switchLabel: "Switch to English",
       question: (n) => `題目 ${String(n).padStart(2, "0")}`,
       mapKicker: "答案地圖", mapHeading: "正確的相鄰地區", mapTarget: "題目地區",
-      mapCorrect: "正確鄰居", mapWrong: "誤選地區"
+      mapCorrect: "正確鄰居", mapWrong: "誤選地區",
+      redWhite: "紅白對抗", redTeam: "紅隊", whiteTeam: "白隊", round: (n) => `第 ${n} 回合`,
+      teamQuestion: (team, n) => `${team}第 ${n} 題`, overtime: (n) => `延長賽第 ${n} 回合`,
+      startThisQuestion: "開始本題", submitTimed: "提交答案", timeUp: "時間到，自動送出！",
+      matchResult: (h, m, w, score) => `選對 ${h} 個｜遺漏 ${m} 個｜錯選 ${w} 個｜本題 ${score} 分`,
+      nextTeam: (team) => `${team}上場`, seeResult: "查看結果", enterOvertime: "進入延長賽",
+      winner: (team) => `${team}獲勝！`, tied: "平手！進入延長賽",
+      matchUnavailable: "此區域至少需要6道題目才能進行紅白對抗。",
+      matchAvailable: (n) => `目前有 ${n} 道題目可供抽題。`, ready: "按下後才會顯示題目，並立即開始30秒倒數。"
     },
     en: {
       sourceDemo: "Demo data", sourceDb: "Supabase data", eyebrow: "Geographic Border Challenge",
@@ -103,7 +128,15 @@
       noQuestion: "There are no available questions in this category.", switchLabel: "切換為中文",
       question: (n) => `QUESTION ${String(n).padStart(2, "0")}`,
       mapKicker: "ANSWER MAP", mapHeading: "The correct bordering regions", mapTarget: "Target",
-      mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices"
+      mapCorrect: "Correct neighbors", mapWrong: "Incorrect choices",
+      redWhite: "Red vs. White", redTeam: "Red Team", whiteTeam: "White Team", round: (n) => `Round ${n}`,
+      teamQuestion: (team, n) => `${team} · Question ${n}`, overtime: (n) => `Overtime Round ${n}`,
+      startThisQuestion: "Start question", submitTimed: "Submit answer", timeUp: "Time is up. Answer submitted!",
+      matchResult: (h, m, w, score) => `${h} correct · ${m} missing · ${w} incorrect · ${score} points`,
+      nextTeam: (team) => `${team} takes the turn`, seeResult: "See result", enterOvertime: "Start overtime",
+      winner: (team) => `${team} wins!`, tied: "Tie! Continue to overtime",
+      matchUnavailable: "This category needs at least six questions for Red vs. White.",
+      matchAvailable: (n) => `${n} questions are currently available.`, ready: "The question appears after you press start, and the 30-second timer begins immediately."
     }
   };
 
@@ -300,7 +333,7 @@
   }
 
   function addAnswer(id) {
-    if (!state.question || state.selected.includes(id)) return;
+    if (!state.question || state.selected.includes(id) || (state.redWhite.active && state.redWhite.locked)) return;
     state.selected.push(id);
     state.checked = false;
     ui.feedback.className = "feedback";
@@ -311,6 +344,7 @@
   }
 
   function removeAnswer(id) {
+    if (state.redWhite.active && state.redWhite.locked) return;
     state.selected = state.selected.filter((value) => value !== id);
     state.checked = false;
     ui.feedback.className = "feedback";
@@ -343,6 +377,274 @@
     renderAnswerMap();
   }
 
+  function questionsForCategory(category) {
+    return state.questions.filter((question) =>
+      Number(question.CategoryID) === Number(category?.CategoryID) && question.IsActive !== false
+    );
+  }
+
+  function matchTeamName(team) {
+    const t = copy[state.lang];
+    return team === "red" ? t.redTeam : t.whiteTeam;
+  }
+
+  function matchQuestionNumber() {
+    if (state.redWhite.turnIndex < 6) return Math.floor(state.redWhite.turnIndex / 2) + 1;
+    return 4 + Math.floor((state.redWhite.turnIndex - 6) / 2);
+  }
+
+  function updateMatchCategoryHint() {
+    const t = copy[state.lang];
+    const category = state.categories.find((item) => Number(item.CategoryID) === Number(ui.matchCategory.value));
+    const count = questionsForCategory(category).length;
+    ui.matchCategoryHint.textContent = count >= 6 ? t.matchAvailable(count) : t.matchUnavailable;
+    ui.matchCategoryHint.className = count >= 6 ? "" : "error-text";
+    ui.startMatch.disabled = count < 6;
+  }
+
+  function renderMatchCategoryOptions() {
+    const previous = ui.matchCategory.value || String(state.category?.CategoryID || "");
+    ui.matchCategory.innerHTML = "";
+    state.categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.CategoryID;
+      option.textContent = state.lang === "zh" ? category.CategoryNameZh : category.CategoryNameEn;
+      option.selected = String(category.CategoryID) === previous;
+      ui.matchCategory.appendChild(option);
+    });
+    if (!ui.matchCategory.value && state.categories[0]) ui.matchCategory.value = state.categories[0].CategoryID;
+    updateMatchCategoryHint();
+  }
+
+  function openMatchIntro() {
+    renderMatchCategoryOptions();
+    ui.intro.hidden = false;
+  }
+
+  function stopMatchTimer() {
+    if (state.redWhite.timerId) window.clearInterval(state.redWhite.timerId);
+    state.redWhite.timerId = null;
+  }
+
+  function updateCountdown() {
+    if (!state.redWhite.active || !state.redWhite.revealed || state.redWhite.locked) return;
+    const milliseconds = Math.max(0, state.redWhite.deadline - Date.now());
+    const seconds = Math.ceil(milliseconds / 1000);
+    ui.countdown.textContent = `00:${String(seconds).padStart(2, "0")}`;
+    ui.countdown.classList.toggle("warning", seconds <= 10 && seconds > 5);
+    ui.countdown.classList.toggle("danger", seconds <= 5);
+    ui.countdown.setAttribute("datetime", `PT${seconds}S`);
+    if (milliseconds <= 0) submitMatchAnswer(true);
+  }
+
+  function updateMatchScoreboard() {
+    const t = copy[state.lang];
+    const rw = state.redWhite;
+    ui.redScore.textContent = rw.scores.red;
+    ui.whiteScore.textContent = rw.scores.white;
+    $("#redTeamLabel").textContent = t.redTeam;
+    $("#whiteTeamLabel").textContent = t.whiteTeam;
+    const questionNumber = matchQuestionNumber();
+    ui.matchRound.textContent = rw.turnIndex < 6 ? t.round(questionNumber) : t.overtime(rw.overtimeRound);
+    ui.turnLabel.textContent = t.teamQuestion(matchTeamName(rw.currentTeam), questionNumber);
+  }
+
+  function refillMatchDeck() {
+    const all = questionsForCategory(state.category);
+    let available = all.filter((question) => !state.redWhite.usedQuestionIds.has(question.QuestionID));
+    if (!available.length) {
+      available = all;
+      state.redWhite.usedQuestionIds.clear();
+    }
+    state.redWhite.deck = shuffle(available);
+  }
+
+  function drawMatchQuestion() {
+    if (!state.redWhite.deck.length) refillMatchDeck();
+    let question = state.redWhite.deck.pop();
+    if (!question) return null;
+    if (state.redWhite.turnIndex < 6 && state.redWhite.usedQuestionIds.has(question.QuestionID)) {
+      refillMatchDeck();
+      question = state.redWhite.deck.pop();
+    }
+    state.redWhite.usedQuestionIds.add(question.QuestionID);
+    return question;
+  }
+
+  function prepareMatchTurn() {
+    const rw = state.redWhite;
+    const t = copy[state.lang];
+    stopMatchTimer();
+    rw.currentTeam = rw.turnIndex % 2 === 0 ? "red" : "white";
+    rw.locked = true;
+    rw.revealed = false;
+    rw.currentScore = 0;
+    rw.afterSubmit = "next";
+    document.body.classList.add("match-waiting");
+    const question = drawMatchQuestion();
+    if (!question) return;
+    state.questionIndex += 1;
+    setQuestion(question);
+    ui.submit.disabled = true;
+    ui.next.disabled = true;
+    ui.countdown.textContent = "00:30";
+    ui.countdown.className = "countdown";
+    updateMatchScoreboard();
+    const number = matchQuestionNumber();
+    ui.readyBadge.textContent = rw.currentTeam === "red" ? "紅" : "白";
+    ui.readyBadge.classList.toggle("white", rw.currentTeam === "white");
+    ui.readyRound.textContent = rw.turnIndex < 6 ? t.round(number) : t.overtime(rw.overtimeRound);
+    ui.readyTeam.textContent = t.teamQuestion(matchTeamName(rw.currentTeam), number);
+    ui.readyMessage.textContent = t.ready;
+    ui.revealQuestion.textContent = t.startThisQuestion;
+    ui.readyModal.hidden = false;
+  }
+
+  function revealMatchQuestion() {
+    const rw = state.redWhite;
+    ui.readyModal.hidden = true;
+    document.body.classList.remove("match-waiting");
+    rw.locked = false;
+    rw.revealed = true;
+    rw.deadline = Date.now() + 30000;
+    ui.submit.disabled = false;
+    updateCountdown();
+    rw.timerId = window.setInterval(updateCountdown, 200);
+  }
+
+  function scoreCurrentAnswer() {
+    const correct = new Set(state.question.CorrectItemIDs);
+    const hits = state.selected.filter((id) => correct.has(id)).length;
+    const wrong = state.selected.filter((id) => !correct.has(id)).length;
+    const missing = state.question.CorrectItemIDs.filter((id) => !state.selected.includes(id)).length;
+    const total = correct.size;
+    const exactBonus = hits === total && wrong === 0 ? 20 : 0;
+    const score = Math.max(0, Math.round(80 * hits / Math.max(1, total)) - wrong * 10 + exactBonus);
+    return {hits, wrong, missing, score};
+  }
+
+  function submitMatchAnswer(timedOut) {
+    const rw = state.redWhite;
+    if (!rw.active || rw.locked || !rw.revealed) return;
+    stopMatchTimer();
+    rw.locked = true;
+    rw.revealed = false;
+    state.checked = true;
+    const result = scoreCurrentAnswer();
+    rw.currentScore = result.score;
+    rw.scores[rw.currentTeam] += result.score;
+    rw.records.push({team: rw.currentTeam, questionId: state.question.QuestionID, ...result, timedOut});
+    const t = copy[state.lang];
+    ui.feedback.className = result.missing === 0 && result.wrong === 0 ? "feedback success" : "feedback error";
+    ui.feedback.textContent = `${timedOut ? `${t.timeUp} ` : ""}${t.matchResult(result.hits, result.missing, result.wrong, result.score)}`;
+    renderAnswers();
+    renderCandidates();
+    renderAnswerMap();
+    updateMatchScoreboard();
+    ui.submit.disabled = true;
+    ui.next.disabled = false;
+    const completedTurn = rw.turnIndex;
+    if (completedTurn === 5) {
+      rw.afterSubmit = rw.scores.red === rw.scores.white ? "overtime" : "result";
+    } else if (completedTurn >= 7 && completedTurn % 2 === 1) {
+      rw.afterSubmit = rw.scores.red === rw.scores.white ? "overtime" : "result";
+    } else {
+      rw.afterSubmit = "next";
+    }
+    if (rw.afterSubmit === "result") ui.next.textContent = t.seeResult;
+    else if (rw.afterSubmit === "overtime") ui.next.textContent = t.enterOvertime;
+    else {
+      const nextTeam = rw.currentTeam === "red" ? "white" : "red";
+      ui.next.textContent = t.nextTeam(matchTeamName(nextTeam));
+    }
+  }
+
+  function advanceMatch() {
+    const rw = state.redWhite;
+    if (rw.afterSubmit === "result") {
+      showMatchResult();
+      return;
+    }
+    if (rw.afterSubmit === "overtime") {
+      rw.overtimeRound += 1;
+      rw.turnIndex += 1;
+    } else {
+      rw.turnIndex += 1;
+    }
+    prepareMatchTurn();
+  }
+
+  function startMatch(categoryId) {
+    const category = state.categories.find((item) => Number(item.CategoryID) === Number(categoryId));
+    if (!category || questionsForCategory(category).length < 6) return;
+    const rw = state.redWhite;
+    state.category = category;
+    rw.active = true;
+    rw.scores = {red: 0, white: 0};
+    rw.turnIndex = 0;
+    rw.overtimeRound = 0;
+    rw.usedQuestionIds = new Set();
+    rw.deck = shuffle(questionsForCategory(category));
+    rw.records = [];
+    document.body.classList.add("match-active");
+    ui.intro.hidden = true;
+    ui.resultModal.hidden = true;
+    ui.matchScoreboard.hidden = false;
+    ui.category.disabled = true;
+    renderCategoryOptions();
+    prepareMatchTurn();
+  }
+
+  function buildConfetti() {
+    ui.confetti.innerHTML = "";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const colors = ["#ffc857", "#54d8dc", "#ffffff", "#cf394d", "#69df9c"];
+    for (let index = 0; index < 72; index += 1) {
+      const piece = document.createElement("i");
+      piece.className = "confetti-piece";
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.background = colors[index % colors.length];
+      piece.style.setProperty("--fall", `${2.4 + Math.random() * 2}s`);
+      piece.style.setProperty("--delay", `${Math.random() * .8}s`);
+      piece.style.setProperty("--drift", `${-90 + Math.random() * 180}px`);
+      ui.confetti.appendChild(piece);
+    }
+  }
+
+  function showMatchResult() {
+    const rw = state.redWhite;
+    const t = copy[state.lang];
+    const winner = rw.scores.red > rw.scores.white ? "red" : "white";
+    ui.resultTitle.textContent = t.winner(matchTeamName(winner));
+    ui.resultRedScore.textContent = rw.scores.red;
+    ui.resultWhiteScore.textContent = rw.scores.white;
+    $("#resultRedLabel").textContent = t.redTeam;
+    $("#resultWhiteLabel").textContent = t.whiteTeam;
+    const redPerfect = rw.records.filter((record) => record.team === "red" && record.score === 100).length;
+    const whitePerfect = rw.records.filter((record) => record.team === "white" && record.score === 100).length;
+    ui.resultDetail.textContent = state.lang === "zh"
+      ? `紅隊完全正確 ${redPerfect} 題｜白隊完全正確 ${whitePerfect} 題`
+      : `Red perfect answers: ${redPerfect} · White perfect answers: ${whitePerfect}`;
+    buildConfetti();
+    ui.resultModal.hidden = false;
+  }
+
+  function endMatch() {
+    stopMatchTimer();
+    state.redWhite.active = false;
+    state.redWhite.locked = false;
+    state.redWhite.revealed = false;
+    document.body.classList.remove("match-active", "match-waiting");
+    ui.intro.hidden = true;
+    ui.readyModal.hidden = true;
+    ui.resultModal.hidden = true;
+    ui.matchScoreboard.hidden = true;
+    ui.category.disabled = false;
+    ui.confetti.innerHTML = "";
+    ui.reset.style.display = "";
+    chooseRandomQuestion(true);
+  }
+
   function makeChip(item, selected) {
     const button = document.createElement("button");
     button.type = "button";
@@ -351,6 +653,7 @@
     button.dataset.id = item.id;
     button.setAttribute("role", "listitem");
     button.draggable = !selected;
+    button.disabled = state.redWhite.active && state.redWhite.locked;
     if (!selected) {
       button.addEventListener("click", () => addAnswer(item.id));
       button.addEventListener("dragstart", (event) => event.dataTransfer.setData("text/plain", item.id));
@@ -450,6 +753,20 @@
     ui.language.textContent = state.lang === "zh" ? "EN" : "中";
     ui.language.setAttribute("aria-label", t.switchLabel);
     ui.badge.textContent = state.source === "database" ? t.sourceDb : t.sourceDemo;
+    ui.redWhiteButton.querySelector("strong").textContent = t.redWhite;
+    $("#redWhiteTitle").textContent = t.redWhite;
+    $("#redWhiteLead").textContent = state.lang === "zh"
+      ? "分成紅隊與白隊，抽籤決定隊伍。紅隊先攻，依序輪流作答，每隊各三題。"
+      : "Split into Red and White teams and draw lots for team identity. Red goes first; teams alternate for three questions each.";
+    $("#redWhiteRules").innerHTML = state.lang === "zh"
+      ? "<li>順序為紅、白、紅、白、紅、白；正式賽六題不重複。</li><li>每題30秒，時間到自動送出當下答案並計分。</li><li>找對比例占80分；完全正確加20分；每個錯選扣10分，最低0分。</li><li>每題最高100分，每隊三題最高300分。</li><li>總分相同時，紅白各加賽一題，直到分出勝負。</li>"
+      : "<li>Turns follow Red, White, Red, White, Red, White; the six regulation questions never repeat.</li><li>Each question lasts 30 seconds. The current choices are submitted automatically when time expires.</li><li>Correct coverage is worth 80 points; a perfect answer adds 20; each incorrect choice deducts 10, with a floor of zero.</li><li>Each question is worth up to 100 points; each team can score up to 300 in regulation.</li><li>If tied, both teams answer one overtime question until a winner emerges.</li>";
+    $("#matchCategoryLabel").textContent = state.lang === "zh" ? "比賽區域" : "Challenge region";
+    ui.cancelMatch.textContent = state.lang === "zh" ? "返回一般模式" : "Back to regular mode";
+    ui.startMatch.textContent = state.lang === "zh" ? "開始" : "Start";
+    ui.exitMatch.textContent = state.lang === "zh" ? "返回一般模式" : "Back to regular mode";
+    ui.rematch.textContent = state.lang === "zh" ? "再戰一場" : "Play again";
+    if (state.redWhite.active) updateMatchScoreboard();
   }
 
   function renderCategoryOptions() {
@@ -478,8 +795,13 @@
     const target = itemMap().get(state.question.TargetItemID);
     ui.targetName.textContent = target ? nameFor(target) : state.question.TargetItemID;
     ui.questionNumber.textContent = t.question(state.questionIndex);
-    ui.submit.disabled = false;
-    ui.next.disabled = false;
+    if (state.redWhite.active) {
+      ui.submit.disabled = state.redWhite.locked || !state.redWhite.revealed;
+      ui.next.disabled = !state.redWhite.locked || state.redWhite.records.length === 0;
+    } else {
+      ui.submit.disabled = false;
+      ui.next.disabled = false;
+    }
     renderCandidates();
     renderAnswers();
   }
@@ -495,7 +817,10 @@
       render();
       if (state.checked) renderAnswerMap();
     });
-    ui.submit.addEventListener("click", checkAnswer);
+    ui.submit.addEventListener("click", () => {
+      if (state.redWhite.active) submitMatchAnswer(false);
+      else checkAnswer();
+    });
     ui.reset.addEventListener("click", () => {
       state.selected = [];
       state.checked = false;
@@ -505,7 +830,10 @@
       renderAnswers();
       renderCandidates();
     });
-    ui.next.addEventListener("click", () => chooseRandomQuestion(true));
+    ui.next.addEventListener("click", () => {
+      if (state.redWhite.active) advanceMatch();
+      else chooseRandomQuestion(true);
+    });
     ui.left.addEventListener("click", () => ui.rail.scrollBy({left: -280, behavior: "smooth"}));
     ui.right.addEventListener("click", () => ui.rail.scrollBy({left: 280, behavior: "smooth"}));
     ui.ring.addEventListener("dragover", (event) => { event.preventDefault(); ui.ring.classList.add("drag-over"); });
@@ -516,6 +844,19 @@
       addAnswer(event.dataTransfer.getData("text/plain"));
     });
     window.addEventListener("resize", () => requestAnimationFrame(layoutSelected));
+    ui.redWhiteButton.addEventListener("click", openMatchIntro);
+    ui.closeIntro.addEventListener("click", () => { ui.intro.hidden = true; });
+    ui.cancelMatch.addEventListener("click", () => { ui.intro.hidden = true; });
+    ui.matchCategory.addEventListener("change", updateMatchCategoryHint);
+    ui.startMatch.addEventListener("click", () => startMatch(ui.matchCategory.value));
+    ui.revealQuestion.addEventListener("click", revealMatchQuestion);
+    ui.exitMatch.addEventListener("click", endMatch);
+    ui.rematch.addEventListener("click", () => startMatch(state.category.CategoryID));
+    window.addEventListener("beforeunload", (event) => {
+      if (!state.redWhite.active || ui.resultModal.hidden === false) return;
+      event.preventDefault();
+      event.returnValue = "";
+    });
   }
 
   async function init() {

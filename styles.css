@@ -499,6 +499,20 @@ select {
   transform: translate(-50%, -50%);
 }
 
+.p124-map-lake-label {
+  width: max-content !important;
+  height: auto !important;
+  color: #d9f6ff;
+  font-size: .68rem;
+  font-style: italic;
+  font-weight: 650;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(3, 22, 35, .95);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .game-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; width: 100%; margin-top: 7px; }
 .button { min-height: 46px; padding: 0 20px; border-radius: 999px; font-weight: 800; cursor: pointer; transition: 160ms ease; }
 .button-primary { border: 1px solid var(--cyan); background: var(--cyan); color: #062128; box-shadow: 0 10px 26px rgba(84,216,220,.18); }

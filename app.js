@@ -30,7 +30,8 @@
     lang: localStorage.getItem("P124LanguageV06") || "en",
     categories: [], questions: [], category: null, question: null, candidates: [], selected: [],
     checked: false, source: "demo", questionIndex: 0,
-    geoData: new Map(), answerMap: null, answerMapLayer: null, answerLabelLayer: null, mapRequest: 0,
+    geoData: new Map(), answerMap: null, answerMapLayer: null, answerWaterLayer: null,
+    answerLabelLayer: null, mapRequest: 0,
     redWhite: {
       active: false, scores: {red: 0, white: 0}, turnIndex: 0, overtimeRound: 0,
       usedQuestionIds: new Set(), deck: [], locked: false, revealed: false,
@@ -50,6 +51,10 @@
     NORTH_CENTRAL_CARIBBEAN_COUNTRIES: "geo/NORTH_CENTRAL_CARIBBEAN_COUNTRIES.geojson"
   };
 
+  const supplementalMapFiles = {
+    US_STATES: {key: "US_GREAT_LAKES", path: "geo/US_GREAT_LAKES.geojson"}
+  };
+
   const mapSources = {
     CN_PROVINCES: {
       zh: "邊界資料：Natural Earth（已簡化）",
@@ -62,8 +67,8 @@
       url: "https://data.gov.tw/dataset/7442"
     },
     US_STATES: {
-      zh: "邊界資料：Natural Earth（已簡化）",
-      en: "Boundary data: Natural Earth (simplified)",
+      zh: "州界與五大湖資料：Natural Earth（已簡化）",
+      en: "State boundaries and Great Lakes: Natural Earth (simplified)",
       url: "https://www.naturalearthdata.com/"
     },
     EUROPE_COUNTRIES: {
@@ -195,30 +200,38 @@
     ui.mapPanel.hidden = true;
   }
 
-  function loadGeoScript(categoryCode, geoJsonPath) {
+  function loadGeoScript(dataKey, geoJsonPath) {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");
       script.src = geoJsonPath.replace(/\.geojson$/, ".js");
-      script.onload = () => resolve(window.P124_GEO_DATA?.[categoryCode] || null);
+      script.onload = () => resolve(window.P124_GEO_DATA?.[dataKey] || null);
       script.onerror = reject;
       document.head.appendChild(script);
     });
   }
 
-  async function loadGeoData(categoryCode) {
-    if (state.geoData.has(categoryCode)) return state.geoData.get(categoryCode);
-    const path = mapFiles[categoryCode];
-    if (!path) return null;
+  async function loadGeoFile(dataKey, path) {
+    if (state.geoData.has(dataKey)) return state.geoData.get(dataKey);
     let data = null;
     try {
       const response = await fetch(path);
       if (!response.ok) throw new Error("Map request failed");
       data = await response.json();
     } catch (error) {
-      data = await loadGeoScript(categoryCode, path);
+      data = await loadGeoScript(dataKey, path);
     }
-    if (data) state.geoData.set(categoryCode, data);
+    if (data) state.geoData.set(dataKey, data);
     return data;
+  }
+
+  function loadGeoData(categoryCode) {
+    const path = mapFiles[categoryCode];
+    return path ? loadGeoFile(categoryCode, path) : Promise.resolve(null);
+  }
+
+  function loadSupplementalGeoData(categoryCode) {
+    const asset = supplementalMapFiles[categoryCode];
+    return asset ? loadGeoFile(asset.key, asset.path) : Promise.resolve(null);
   }
 
   function ensureAnswerMap() {
@@ -249,7 +262,10 @@
     }
     const requestId = ++state.mapRequest;
     try {
-      const data = await loadGeoData(categoryCode);
+      const [data, supplementalData] = await Promise.all([
+        loadGeoData(categoryCode),
+        loadSupplementalGeoData(categoryCode)
+      ]);
       if (!data || requestId !== state.mapRequest || !state.checked) return;
       const map = ensureAnswerMap();
       if (!map) return;
@@ -259,12 +275,37 @@
       const labeledIds = new Set([targetId, ...correctIds, ...wrongIds]);
       const focusIds = new Set([targetId, ...correctIds]);
       if (state.answerMapLayer) state.answerMapLayer.remove();
+      if (state.answerWaterLayer) state.answerWaterLayer.remove();
       if (state.answerLabelLayer) state.answerLabelLayer.remove();
       state.answerMapLayer = L.geoJSON(data, {
         style: (feature) => answerMapStyle(feature, targetId, correctIds, wrongIds),
         interactive: false
       }).addTo(map);
+      if (supplementalData) {
+        state.answerWaterLayer = L.geoJSON(supplementalData, {
+          style: {
+            color: "#72c9e8",
+            weight: 1.15,
+            fillColor: "#0d5a78",
+            fillOpacity: .94
+          },
+          interactive: false
+        }).addTo(map);
+      } else {
+        state.answerWaterLayer = null;
+      }
       state.answerLabelLayer = L.layerGroup();
+      if (supplementalData) {
+        supplementalData.features.forEach((feature) => {
+          const bounds = L.geoJSON(feature).getBounds();
+          if (!bounds.isValid()) return;
+          const label = state.lang === "zh" ? feature.properties.zh : feature.properties.en;
+          L.marker(bounds.getCenter(), {
+            interactive: false,
+            icon: L.divIcon({className: "p124-map-lake-label", html: escapeHtml(label), iconSize: null})
+          }).addTo(state.answerLabelLayer);
+        });
+      }
       const names = itemMap();
       data.features.filter((feature) => labeledIds.has(feature.properties.id)).forEach((feature) => {
         const properties = feature.properties;

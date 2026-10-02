@@ -1,4 +1,4 @@
-# P124 V0.012 - SBI-P-SDS v3.2 Compliance
+# P124 V0.013 - SBI-P-SDS v3.2 Compliance
 
 ## Stable baseline
 
@@ -8,8 +8,8 @@
 
 ## Web versioning
 
-- Visible label: `P124 Web Version V0.012`.
-- `styles.css`, `demo-data.js`, and `app.js` use cache-busting parameter `v=0.012`.
+- Visible label: `P124 Web Version V0.013`.
+- `styles.css`, `demo-data.js`, and `app.js` use cache-busting parameter `v=0.013`.
 - Package version and visible Web Version are aligned.
 
 ## Configuration and delivery
@@ -25,6 +25,7 @@
 - No database migration is required for Red vs. White.
 - No table, view, RPC, policy, trigger, Edge Function, or Storage object is added or changed.
 - Existing SQL remains scoped to P124 objects.
+- V0.013 adds only local Natural Earth Great Lakes display data; no database migration is required.
 
 ## Authentication
 

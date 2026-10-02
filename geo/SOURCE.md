@@ -85,3 +85,17 @@
 - 使用拓撲保留簡化並保留小型島嶼，座標保留小數點後四位。
 - 原始124,348個邊界頂點簡化為14,519個，減少約88.3%；GeoJSON約277 KB。
 - `NORTH_CENTRAL_CARIBBEAN_COUNTRIES.geojson` 為標準 GeoJSON；同名 `.js` 為本機直接開啟 HTML 時使用的包裝檔。
+
+# P124 V0.013 新增圖資
+
+## 美國五大湖水域
+
+- 原始資料：Natural Earth `Lakes + Reservoirs`。
+- 原始比例尺：1:10m。
+- 授權：Public Domain。
+- 來源：https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/
+- 下載日期：2026-10-02。
+- 收錄範圍：蘇必略湖、密西根湖、休倫湖、伊利湖、安大略湖。
+- 座標保留小數點後五位；僅保留顯示所需的中英文名稱與幾何資料。
+- `US_GREAT_LAKES.geojson` 為標準 GeoJSON；同名 `.js` 為直接開啟本機 HTML 時使用的包裝檔。
+- 此圖層用於遮蔽美國州行政界延伸至湖面的區域，協助辨識陸地接壤關係，不作為法律邊界認定用途。
